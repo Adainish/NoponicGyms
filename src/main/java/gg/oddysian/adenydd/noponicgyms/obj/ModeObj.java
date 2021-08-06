@@ -73,7 +73,7 @@ public class ModeObj {
     public static class Mode {
         public List<String> info;
         public String key;
-        public String permission = "DEFAULT IMAGE";
+
         public Mode(String key) {
             this.key = key;
 

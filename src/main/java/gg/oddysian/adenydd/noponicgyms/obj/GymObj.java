@@ -73,16 +73,22 @@ public class GymObj {
     public static class Gym {
         public String key;
         public String permission = "DEFAULT IMAGE";
-        public ModeObj.Mode tier;
+        public String tier;
         public String leadermessage;
         public int levelcap;
         public String display;
         public List<String> lore;
 
         public Gym(String key) {
+
             this.key = key;
+            this.display = GymConfig.getConfig().get().getNode("Gyms", key, "UI", "Display").getString();
+            this.permission = GymConfig.getConfig().get().getNode("Gyms", key, "Permission").getString();
+            this.tier = GymConfig.getConfig().get().getNode("Gyms", key, "Tier").getString();
+            this.leadermessage = GymConfig.getConfig().get().getNode("Gyms", key, "LeaderMessage").getString();
+            this.levelcap = GymConfig.getConfig().get().getNode("Gyms", key, "LevelCap").getInt();
             try {
-                this.lore = GymConfig.getConfig().get().getNode("Gyms", key, "Text").getList(TypeToken.of(String.class));
+                this.lore = GymConfig.getConfig().get().getNode("Gyms", key, "UI", "Lore").getList(TypeToken.of(String.class));
             } catch (ObjectMappingException e) {
                 e.printStackTrace();
             }

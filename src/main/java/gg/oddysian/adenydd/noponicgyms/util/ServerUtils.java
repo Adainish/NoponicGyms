@@ -1,5 +1,7 @@
 package gg.oddysian.adenydd.noponicgyms.util;
 
+import gg.oddysian.adenydd.noponicgyms.config.Config;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
@@ -19,7 +21,9 @@ public class ServerUtils {
         // IJ says it's always true ignore
         return player != null;
     }
-
+    public static void send(ICommandSender sender, String message) {
+        sender.sendMessage(new TextComponentString((Config.getConfig().get().getNode("ServerPrefix").getString() + message).replaceAll("&([0-9a-fk-or])", "\u00a7$1")));
+    }
     public static void doBroadcast(String message) {
         SERVER.getPlayerList().sendMessage(new TextComponentString(message.replaceAll("&([0-9a-fk-or])","\u00a7$1")));
     }

@@ -1,11 +1,15 @@
 package gg.oddysian.adenydd.noponicgyms;
 
+import gg.oddysian.adenydd.noponicgyms.commands.Command;
 import gg.oddysian.adenydd.noponicgyms.config.Config;
 import gg.oddysian.adenydd.noponicgyms.config.GymConfig;
+import gg.oddysian.adenydd.noponicgyms.obj.GymObj;
+import gg.oddysian.adenydd.noponicgyms.obj.ModeObj;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -46,13 +50,12 @@ public class NoponicGyms {
     }
 
     @Mod.EventHandler
-    public void init(FMLInitializationEvent event) {
+    public void starting(FMLServerStartingEvent event) {
 
+        GymObj.loadGyms();
+        ModeObj.loadGymModes();
+
+        event.registerServerCommand(new Command());
     }
 
-
-    @Mod.EventHandler
-    public void postinit(FMLPostInitializationEvent event) {
-
-    }
 }
