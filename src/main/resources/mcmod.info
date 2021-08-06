@@ -1,0 +1,19 @@
+[
+  {
+    "modid": "NoponicGyms",
+    "name": "NoponicGyms",
+    "description": "1.12.2 Gyms Plugin for Pixelmon! Using the Superior Community API GooeyLibs & CableLibs",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "gg.notaquagyms.com",
+    "updateUrl": "anypublicgit.com",
+    "authorList": [
+      "Adenydd",
+      "AnDWh5T"
+    ],
+    "credits": "",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
+]
