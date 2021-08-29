@@ -1,5 +1,6 @@
 package gg.oddysian.adenydd.noponicgyms;
 
+import gg.oddysian.adenydd.noponicgyms.capability.GymBadgeCapability;
 import gg.oddysian.adenydd.noponicgyms.commands.Command;
 import gg.oddysian.adenydd.noponicgyms.config.Config;
 import gg.oddysian.adenydd.noponicgyms.config.GymConfig;
@@ -42,20 +43,37 @@ public class NoponicGyms {
         configDir = new File(event.getModConfigurationDirectory() + "/");
         configDir.mkdir();
 
-        Config.getConfig().setup();
-        GymConfig.getConfig().setup();
+        initConfig(); //Init all Configs
 
-        Config.getConfig().load();
-        GymConfig.getConfig().load();
+        loadConfig(); //Load all configs
+
+        GymBadgeCapability.register(); //Registering Badge Storage Data for Handling
     }
 
     @Mod.EventHandler
     public void starting(FMLServerStartingEvent event) {
 
-        GymObj.loadGyms();
-        ModeObj.loadGymModes();
+        initOBJ();
 
         event.registerServerCommand(new Command());
+    }
+
+
+
+
+    private void initConfig() {
+        Config.getConfig().setup();
+        GymConfig.getConfig().setup();
+    }
+
+    public void initOBJ() {
+        GymObj.loadGyms();
+        ModeObj.loadGymModes();
+    }
+
+    public void loadConfig() {
+        Config.getConfig().load();
+        GymConfig.getConfig().load();
     }
 
 }

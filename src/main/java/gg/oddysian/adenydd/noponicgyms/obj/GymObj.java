@@ -1,10 +1,21 @@
 package gg.oddysian.adenydd.noponicgyms.obj;
 
 import com.google.common.reflect.TypeToken;
+import com.pixelmonmod.pixelmon.Pixelmon;
+import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
+import com.pixelmonmod.pixelmon.config.PixelmonItemsTMs;
+import com.pixelmonmod.pixelmon.entities.pixelmon.stats.StatsType;
+import com.pixelmonmod.pixelmon.enums.EnumNature;
+import com.pixelmonmod.pixelmon.enums.EnumSpecies;
+import com.pixelmonmod.pixelmon.enums.forms.EnumNoForm;
+import com.pixelmonmod.pixelmon.enums.forms.IEnumForm;
+import com.pixelmonmod.pixelmon.enums.technicalmoves.ITechnicalMove;
 import gg.oddysian.adenydd.noponicgyms.NoponicGyms;
 import gg.oddysian.adenydd.noponicgyms.config.GymConfig;
 import info.pixelmon.repack.ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import info.pixelmon.repack.ninja.leaping.configurate.objectmapping.ObjectMappingException;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -71,16 +82,20 @@ public class GymObj {
     }
 
     public static class Gym {
+        public ItemStack gymBadge;
         public String key;
         public String permission = "DEFAULT IMAGE";
         public String tier;
         public String leadermessage;
+        public String badgeitemstring;
         public int levelcap;
         public String display;
         public List<String> lore;
+        public List<Pokemon> gymPokemon = new ArrayList<>();
 
         public Gym(String key) {
 
+            this.badgeitemstring = GymConfig.getConfig().get().getNode("Gyms", key, "Badge").getString();
             this.key = key;
             this.display = GymConfig.getConfig().get().getNode("Gyms", key, "UI", "Display").getString();
             this.permission = GymConfig.getConfig().get().getNode("Gyms", key, "Permission").getString();
@@ -92,6 +107,139 @@ public class GymObj {
             } catch (ObjectMappingException e) {
                 e.printStackTrace();
             }
+            String[] elements = badgeitemstring.split(" ");
+            this.gymBadge = setDefaultIcon(elements);
+            this.gymPokemon = setGymPokemon(key, GymConfig.getConfig().get().getNode("Gyms", key, "GymPokemon"));
+        }
+
+        
+        private List<Pokemon> setGymPokemon(String gymKey, CommentedConfigurationNode node) {
+            List<Pokemon> gymPokemon = new ArrayList<>();
+            Map nodemap = node.getChildrenMap();
+            for (Object obj: nodemap.keySet()) {
+                if (obj == null)
+                    continue;
+                String nodestring = obj.toString();
+                gymPokemon.add(generateGymPokemon(gymKey, nodestring));
+
+            }
+            return gymPokemon;
+        }
+
+        private Pokemon generateGymPokemon(String gymKey, String node) {
+
+            String pokemonname = GymConfig.getConfig().get().getNode("Gyms", gymKey, "GymPokemon", node, "PokemonName").getString();
+            int form = GymConfig.getConfig().get().getNode("Gyms", gymKey, "GymPokemon", node, "Form").getInt();
+            int level = GymConfig.getConfig().get().getNode("Gyms", gymKey, "GymPokemon", node, "Level").getInt();
+            String nickname = GymConfig.getConfig().get().getNode("Gyms", gymKey, "GymPokemon", node, "NickName").getString();
+            boolean shiny = GymConfig.getConfig().get().getNode("Gyms", gymKey, "GymPokemon", node, "Shiny").getBoolean();
+            String texture = GymConfig.getConfig().get().getNode("Gyms", gymKey, "GymPokemon", node, "Texture").getString();
+            String nature = GymConfig.getConfig().get().getNode("Gyms", gymKey, "GymPokemon", node, "Stats", "Nature").getString();
+            String ability = GymConfig.getConfig().get().getNode("Gyms", gymKey, "GymPokemon", node, "Stats", "Ability").getString();
+            int dynamaxLevel = GymConfig.getConfig().get().getNode("Gyms", gymKey, "GymPokemon", node, "Dynamax").getInt();
+
+
+            //Evs
+
+            int evsHP = GymConfig.getConfig().get().getNode("Gyms", gymKey, "GymPokemon", node, "Stats", "EVS", "HP").getInt();
+            int evsATK = GymConfig.getConfig().get().getNode("Gyms", gymKey, "GymPokemon", node, "Stats", "EVS", "ATK").getInt();
+            int evsSPA = GymConfig.getConfig().get().getNode("Gyms", gymKey, "GymPokemon", node, "Stats", "EVS", "SPA").getInt();
+            int evsDEF = GymConfig.getConfig().get().getNode("Gyms", gymKey, "GymPokemon", node, "Stats", "EVS", "DEF").getInt();
+            int evsSPDEF = GymConfig.getConfig().get().getNode("Gyms", gymKey, "GymPokemon", node, "Stats", "EVS", "SPDEF").getInt();
+            int evsSPD = GymConfig.getConfig().get().getNode("Gyms", gymKey, "GymPokemon", node, "Stats", "EVS", "SPD").getInt();
+            //IVS
+            int ivsHP = GymConfig.getConfig().get().getNode("Gyms", gymKey, "GymPokemon", node, "Stats", "IVS", "HP").getInt();
+            int ivsATK = GymConfig.getConfig().get().getNode("Gyms", gymKey, "GymPokemon", node, "Stats", "IVS", "ATK").getInt();
+            int ivsSPA = GymConfig.getConfig().get().getNode("Gyms", gymKey, "GymPokemon", node, "Stats", "IVS", "SPA").getInt();
+            int ivsDEF = GymConfig.getConfig().get().getNode("Gyms", gymKey, "GymPokemon", node, "Stats", "IVS", "DEF").getInt();
+            int ivsSPDEF = GymConfig.getConfig().get().getNode("Gyms", gymKey, "GymPokemon", node, "Stats", "IVS", "SPDEF").getInt();
+            int ivsSPD = GymConfig.getConfig().get().getNode("Gyms", gymKey, "GymPokemon", node, "Stats", "IVS", "SPD").getInt();
+
+            Pokemon pokemon = Pixelmon.pokemonFactory.create(EnumSpecies.getFromNameAnyCase(pokemonname));
+            pokemon.setLevel(level);
+
+            pokemon.getIVs().setStat(StatsType.HP, ivsHP);
+            pokemon.getIVs().setStat(StatsType.Attack, ivsATK);
+            pokemon.getIVs().setStat(StatsType.SpecialAttack, ivsSPA);
+            pokemon.getIVs().setStat(StatsType.Defence, ivsDEF);
+            pokemon.getIVs().setStat(StatsType.SpecialDefence, ivsSPDEF);
+            pokemon.getIVs().setStat(StatsType.Speed, ivsSPD);
+
+
+            pokemon.getEVs().setStat(StatsType.HP, evsHP);
+            pokemon.getEVs().setStat(StatsType.Attack, evsATK);
+            pokemon.getEVs().setStat(StatsType.SpecialAttack, evsSPA);
+            pokemon.getEVs().setStat(StatsType.Defence, evsDEF);
+            pokemon.getEVs().setStat(StatsType.SpecialDefence, evsSPDEF);
+            pokemon.getEVs().setStat(StatsType.Speed, evsSPD);
+
+            if (nickname != null) {
+                if (!nickname.isEmpty())
+                    pokemon.setNickname(nickname);
+            }
+
+            if (form != 0)
+                pokemon.setForm(form);
+
+            pokemon.setShiny(shiny);
+
+            if (texture != null) {
+                if (!nickname.isEmpty())
+                    pokemon.setCustomTexture(texture);
+            }
+
+            pokemon.setNature(EnumNature.natureFromString(nature));
+            pokemon.setAbility(ability);
+            pokemon.setDynamaxLevel(dynamaxLevel);
+            pokemon.setDoesLevel(false);
+
+            return pokemon;
+        }
+
+        private static ItemStack setDefaultIcon(String[] elements) {
+
+
+            boolean applyMeta = false;
+
+            String itemTypeString;
+
+            try {
+                itemTypeString = elements[0];
+            } catch (Exception var5) {
+                itemTypeString = "minecraft:paper";
+            }
+
+            Item op = Item.getByNameOrId("" + itemTypeString);
+
+            if (elements.length > 1 && elements[1] != null && !elements[1].isEmpty()) {
+                if (op != null) {
+                    op.setHasSubtypes(true);
+                    applyMeta = true;
+
+                    if (itemTypeString.contains("pixelmon:tm_gen")) {
+
+                        String mv = elements[0].replaceAll("pixelmon:", "");
+
+                        ITechnicalMove technicalMove = ITechnicalMove.getMoveFor(mv, Integer.valueOf(elements[1]));
+
+                        return  PixelmonItemsTMs.createStackFor(technicalMove);
+
+                    }
+
+                }
+            }
+
+            ItemStack itemType;
+            if (op != null) {
+                itemType = new ItemStack(op);
+                if (applyMeta) {
+                    itemType.setItemDamage(Integer.valueOf(elements[1]));
+                }
+                return itemType;
+            }
+
+            itemType = new ItemStack(op);
+            return itemType;
         }
     }
 }

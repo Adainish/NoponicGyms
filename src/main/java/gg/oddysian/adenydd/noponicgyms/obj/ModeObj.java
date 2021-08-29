@@ -77,11 +77,6 @@ public class ModeObj {
         public Mode(String key) {
             this.key = key;
 
-            try {
-                this.info = GymConfig.getConfig().get().getNode("Book", key, "Text").getList(TypeToken.of(String.class));
-            } catch (ObjectMappingException e) {
-                e.printStackTrace();
-            }
         }
         public List<String> getFormattedText() {
             List<String> formattedInfo = new ArrayList<>();
