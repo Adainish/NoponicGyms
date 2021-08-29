@@ -16,6 +16,12 @@ version = '1.0-SNAPSHOT'
 archivesBaseName = 'NoponicGyms'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+tasks.withType(JavaCompile)
+        {
+            task ->
+                task.options.encoding = 'UTF-8'
+                task.options.fork = true
+        }
 repositories {
     maven { url = "https://repo.aikar.co/content/groups/aikar/" }
     maven { url = "https://jitpack.io/" }

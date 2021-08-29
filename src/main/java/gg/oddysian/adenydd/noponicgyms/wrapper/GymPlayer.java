@@ -8,7 +8,6 @@ import gg.oddysian.adenydd.noponicgyms.util.ServerUtils;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.player.PlayerCapabilities;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -72,36 +71,25 @@ public class GymPlayer {
     public EntityPlayerMP getPlayer() {
         return player;
     }
-
-    public List<GymBadge> getBadges() {
-        return badges;
-    }
-
+    public List<GymBadge> getBadges() {return badges;}
     public long getLastUpdated() {
         return lastUpdated;
     }
-
     public UUID getUuid() {
         return uuid;
     }
-
     public void setLastUpdated(long lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
-
     public void setBadges(List<GymBadge> badges) {
         this.badges = badges;
     }
-
     public void setPlayer(EntityPlayerMP player) {
         this.player = player;
     }
-
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
     }
-
-
     public void updateBadges(GymBadge badge) {
         this.badges.add(badge);
     }
@@ -110,8 +98,12 @@ public class GymPlayer {
         for (GymObj.Gym gym:gymList) {
             GymBadge gymBadge = new GymBadge();
             gymBadge.setGym(gym.key);
-            gymBadge.setBadgeName("");
+            gymBadge.setBadgeName(gym.display);
+            gymBadge.setItemstring(gym.badgeitemstring);
+            gymBadge.setBadgelore(gym.lore);
+            gymBadge.setBadgedisplay(gym.display);
             badges.add(gymBadge);
+            badgeList().add(gym.key);
         }
     }
 }

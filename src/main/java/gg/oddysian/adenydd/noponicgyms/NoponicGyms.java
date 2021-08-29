@@ -4,6 +4,7 @@ import gg.oddysian.adenydd.noponicgyms.capability.GymBadgeCapability;
 import gg.oddysian.adenydd.noponicgyms.commands.Command;
 import gg.oddysian.adenydd.noponicgyms.config.Config;
 import gg.oddysian.adenydd.noponicgyms.config.GymConfig;
+import gg.oddysian.adenydd.noponicgyms.listener.PlayerListener;
 import gg.oddysian.adenydd.noponicgyms.obj.GymObj;
 import gg.oddysian.adenydd.noponicgyms.obj.ModeObj;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -35,6 +36,9 @@ public class NoponicGyms {
     @Mod.Instance(MOD_ID)
     public static NoponicGyms INSTANCE;
 
+
+    public static PlayerListener playerListener;
+
     @Mod.EventHandler
     public void preinit(FMLPreInitializationEvent event) {
 
@@ -48,6 +52,8 @@ public class NoponicGyms {
         loadConfig(); //Load all configs
 
         GymBadgeCapability.register(); //Registering Badge Storage Data for Handling
+
+        playerListener = new PlayerListener();
     }
 
     @Mod.EventHandler
@@ -57,9 +63,6 @@ public class NoponicGyms {
 
         event.registerServerCommand(new Command());
     }
-
-
-
 
     private void initConfig() {
         Config.getConfig().setup();

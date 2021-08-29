@@ -22,7 +22,7 @@ public class ServerUtils {
         return player != null;
     }
     public static void send(ICommandSender sender, String message) {
-        sender.sendMessage(new TextComponentString((Config.getConfig().get().getNode("ServerPrefix").getString() + message).replaceAll("&([0-9a-fk-or])", "\u00a7$1")));
+        sender.sendMessage(new TextComponentString((Config.getConfig().get().getNode("ServerPrefix").getString() + " " + message).replaceAll("&([0-9a-fk-or])", "\u00a7$1")));
     }
     public static void doBroadcast(String message) {
         SERVER.getPlayerList().sendMessage(new TextComponentString(message.replaceAll("&([0-9a-fk-or])","\u00a7$1")));

@@ -1,7 +1,9 @@
 package gg.oddysian.adenydd.noponicgyms.capability.interfaces;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GymBadge implements IGymBadge{
@@ -9,9 +11,12 @@ public class GymBadge implements IGymBadge{
     private String gym;
     private String badgeName;
     private String tier;
+    private String itemstring;
+    private String badgedisplay;
+    private List<String> badgelore = new ArrayList<>();
     private boolean obtained;
     private long date;
-    private List<String> pokemon;
+    private List<String> pokemon = new ArrayList<>();
     private String leader;
 
 
@@ -71,15 +76,60 @@ public class GymBadge implements IGymBadge{
         this.gym = gym;
     }
 
+    public NBTTagList nbtTagList(List<String> list) {
+        NBTTagList nbtTagList = new NBTTagList();
+        for (String s:list) {
+            NBTTagCompound nbt = new NBTTagCompound();
+            nbt.setString("pokemon", s);
+            nbtTagList.appendTag(nbt);
+        }
+
+        return nbtTagList;
+    }
+
     public NBTTagCompound serializeNBT() {
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setString(gym, badgeName);
         nbt.setBoolean(badgeName, obtained);
+        nbt.setLong(badgeName, date);
+        if (obtained && !pokemon.isEmpty())
+        nbt.setTag("pokemon", nbtTagList(pokemon));
         return nbt;
     }
 
     public void deserializeNBT(NBTTagCompound nbt) {
         nbt.getString(gym);
         nbt.getBoolean(badgeName);
+        nbt.getLong(badgeName);
+        if (nbt.getBoolean(badgeName))
+        nbt.getTag("pokemon");
+    }
+
+    public void setObtained(boolean obtained) {
+        this.obtained = obtained;
+    }
+
+    public List<String> getBadgelore() {
+        return badgelore;
+    }
+
+    public void setBadgelore(List<String> badgelore) {
+        this.badgelore = badgelore;
+    }
+
+    public String getBadgedisplay() {
+        return badgedisplay;
+    }
+
+    public void setBadgedisplay(String badgedisplay) {
+        this.badgedisplay = badgedisplay;
+    }
+
+    public String getItemstring() {
+        return itemstring;
+    }
+
+    public void setItemstring(String itemstring) {
+        this.itemstring = itemstring;
     }
 }
