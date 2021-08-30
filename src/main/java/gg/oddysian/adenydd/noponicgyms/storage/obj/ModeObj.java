@@ -1,10 +1,8 @@
-package gg.oddysian.adenydd.noponicgyms.obj;
+package gg.oddysian.adenydd.noponicgyms.storage.obj;
 
-import com.google.common.reflect.TypeToken;
 import gg.oddysian.adenydd.noponicgyms.NoponicGyms;
-import gg.oddysian.adenydd.noponicgyms.config.GymConfig;
+import gg.oddysian.adenydd.noponicgyms.storage.config.GymConfig;
 import info.pixelmon.repack.ninja.leaping.configurate.commented.CommentedConfigurationNode;
-import info.pixelmon.repack.ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
 import java.util.ArrayList;
 import java.util.Iterator;

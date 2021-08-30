@@ -1,4 +1,4 @@
-package gg.oddysian.adenydd.noponicgyms.config;
+package gg.oddysian.adenydd.noponicgyms.storage.config;
 
 import lombok.SneakyThrows;
 
@@ -26,6 +26,19 @@ public class GymConfig extends Configurable {
     public void populate() {
         this.get().getNode("Modes", "Tiers").setValue(Arrays.asList("Tier1", "Tier2", "NPCGym"));
         this.get().getNode("Gyms", "Example", "Tier").setValue("Tier1");
+        this.get().getNode("Gyms", "Example", "Warp", "GymLeader", "WorldID").setValue(0);
+        this.get().getNode("Gyms", "Example", "Warp", "GymLeader", "X").setValue(100.00);
+        this.get().getNode("Gyms", "Example" ,"Warp", "GymLeader", "Y").setValue(80.00);
+        this.get().getNode("Gyms", "Example", "Warp", "Challenger", "WorldID").setValue(0);
+        this.get().getNode("Gyms", "Example", "Warp", "Challenger", "X").setValue(100.00);
+        this.get().getNode("Gyms", "Example" ,"Warp", "Challenger", "Y").setValue(80.00);
+        this.get().getNode("Gyms", "Example", "Warp", "Entry", "WorldID").setValue(0);
+        this.get().getNode("Gyms", "Example", "Warp", "Entry", "X").setValue(100.00);
+        this.get().getNode("Gyms", "Example" ,"Warp", "Entry", "Y").setValue(80.00);
+        this.get().getNode("Gyms", "Example" ,"Warp", "Z").setValue(100.00);
+        this.get().getNode("Gyms", "Example", "Fee", "EnableFee").setValue(true);
+        this.get().getNode("Gyms", "Example", "Fee", "Fee").setValue(100.00);
+        this.get().getNode("Gyms", "Example", "Fee", "PayLeader").setValue(true).setComment("Should the leader taking the battle be paid the fee if enabled?");
         this.get().getNode("Gyms", "Example", "LeaderMessage").setValue("&c%leader% of the %gym% has joined the server!");
         this.get().getNode("Gyms", "Example", "Permission").setValue("gyms.examplegym.leader");
         this.get().getNode("Gyms", "Example", "LevelCap").setValue(10);

@@ -1,4 +1,4 @@
-package gg.oddysian.adenydd.noponicgyms.config;
+package gg.oddysian.adenydd.noponicgyms.storage.config;
 
 import gg.oddysian.adenydd.noponicgyms.NoponicGyms;
 import info.pixelmon.repack.ninja.leaping.configurate.commented.CommentedConfigurationNode;

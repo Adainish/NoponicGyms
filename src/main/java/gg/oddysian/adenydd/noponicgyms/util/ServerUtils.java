@@ -1,6 +1,6 @@
 package gg.oddysian.adenydd.noponicgyms.util;
 
-import gg.oddysian.adenydd.noponicgyms.config.Config;
+import gg.oddysian.adenydd.noponicgyms.storage.config.Config;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;

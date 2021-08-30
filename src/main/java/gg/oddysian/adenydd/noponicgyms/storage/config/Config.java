@@ -1,8 +1,6 @@
-package gg.oddysian.adenydd.noponicgyms.config;
+package gg.oddysian.adenydd.noponicgyms.storage.config;
 
 import lombok.SneakyThrows;
-
-import java.util.Arrays;
 
 public class Config extends Configurable {
     private static Config config;

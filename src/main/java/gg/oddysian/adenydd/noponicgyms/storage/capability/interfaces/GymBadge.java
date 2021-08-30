@@ -1,4 +1,4 @@
-package gg.oddysian.adenydd.noponicgyms.capability.interfaces;
+package gg.oddysian.adenydd.noponicgyms.storage.capability.interfaces;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;

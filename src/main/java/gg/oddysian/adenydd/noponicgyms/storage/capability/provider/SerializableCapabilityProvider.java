@@ -1,4 +1,4 @@
-package gg.oddysian.adenydd.noponicgyms.capability.provider;
+package gg.oddysian.adenydd.noponicgyms.storage.capability.provider;
 
 import net.minecraft.nbt.NBTBase;
 import net.minecraftforge.common.capabilities.Capability;

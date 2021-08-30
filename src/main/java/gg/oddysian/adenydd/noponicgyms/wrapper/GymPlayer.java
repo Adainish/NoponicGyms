@@ -1,9 +1,7 @@
 package gg.oddysian.adenydd.noponicgyms.wrapper;
 
-import gg.oddysian.adenydd.noponicgyms.capability.GymBadgeCapability;
-import gg.oddysian.adenydd.noponicgyms.capability.interfaces.GymBadge;
-import gg.oddysian.adenydd.noponicgyms.obj.GymObj;
-import gg.oddysian.adenydd.noponicgyms.util.PermissionUtils;
+import gg.oddysian.adenydd.noponicgyms.storage.capability.interfaces.GymBadge;
+import gg.oddysian.adenydd.noponicgyms.storage.obj.GymObj;
 import gg.oddysian.adenydd.noponicgyms.util.ServerUtils;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,10 +18,31 @@ public class GymPlayer {
     private EntityPlayerMP player;
     private UUID uuid;
     private long lastUpdated;
-
     private List<GymObj.Gym> gymList = GymObj.gyms;
     private List<GymBadge> badges = new ArrayList<>();
+    public boolean isQueuedFor(GymPlayer player, GymObj.Gym gym) {
+        return gym.gymQueue.containsKey(player.getUuid());
+    }
 
+    private boolean queued;
+
+    public boolean isQueued() {
+        return queued;
+    }
+
+    public void setQueued(boolean queued) {
+        this.queued = queued;
+    }
+
+    public void setQueuedFor(GymPlayer player, GymObj.Gym gym, boolean add) {
+        if (add) {
+            if (!gym.gymQueue.containsKey(player.getUuid()))
+                gym.gymQueue.put(player.getUuid(), player);
+        } else {
+            if (gym.gymQueue.containsKey(player.getUuid()))
+                gym.gymQueue.remove(player.getUuid(), player);
+        }
+    }
 
     public GymPlayer(UUID uuid) {
         this.uuid = uuid;

@@ -1,9 +1,9 @@
-package gg.oddysian.adenydd.noponicgyms.capability;
+package gg.oddysian.adenydd.noponicgyms.storage.capability;
 
 import gg.oddysian.adenydd.noponicgyms.NoponicGyms;
-import gg.oddysian.adenydd.noponicgyms.capability.interfaces.GymBadge;
-import gg.oddysian.adenydd.noponicgyms.capability.interfaces.IGymBadge;
-import gg.oddysian.adenydd.noponicgyms.capability.provider.SerializableCapabilityProvider;
+import gg.oddysian.adenydd.noponicgyms.storage.capability.interfaces.GymBadge;
+import gg.oddysian.adenydd.noponicgyms.storage.capability.interfaces.IGymBadge;
+import gg.oddysian.adenydd.noponicgyms.storage.capability.provider.SerializableCapabilityProvider;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;

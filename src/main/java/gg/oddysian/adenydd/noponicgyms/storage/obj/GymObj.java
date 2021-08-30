@@ -1,4 +1,4 @@
-package gg.oddysian.adenydd.noponicgyms.obj;
+package gg.oddysian.adenydd.noponicgyms.storage.obj;
 
 import com.google.common.reflect.TypeToken;
 import com.pixelmonmod.pixelmon.Pixelmon;
@@ -7,20 +7,16 @@ import com.pixelmonmod.pixelmon.config.PixelmonItemsTMs;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.StatsType;
 import com.pixelmonmod.pixelmon.enums.EnumNature;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
-import com.pixelmonmod.pixelmon.enums.forms.EnumNoForm;
-import com.pixelmonmod.pixelmon.enums.forms.IEnumForm;
 import com.pixelmonmod.pixelmon.enums.technicalmoves.ITechnicalMove;
 import gg.oddysian.adenydd.noponicgyms.NoponicGyms;
-import gg.oddysian.adenydd.noponicgyms.config.GymConfig;
+import gg.oddysian.adenydd.noponicgyms.storage.config.GymConfig;
+import gg.oddysian.adenydd.noponicgyms.wrapper.GymPlayer;
 import info.pixelmon.repack.ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import info.pixelmon.repack.ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class GymObj {
@@ -82,6 +78,7 @@ public class GymObj {
     }
 
     public static class Gym {
+        public HashMap<UUID, GymPlayer> gymQueue = new HashMap<>();
         public ItemStack gymBadge;
         public String key;
         public String permission = "DEFAULT IMAGE";
@@ -89,11 +86,48 @@ public class GymObj {
         public String leadermessage;
         public String badgeitemstring;
         public int levelcap;
+        public int worldID;
+        public double posX;
+        public double posY;
+        public double posZ;
+
+        public int leaderWorldID;
+        public double leaderPosX;
+        public double leaderPosY;
+        public double leaderPosZ;
+
+        public int challengerWorldID;
+        public double challengerPosX;
+        public double challengerPosY;
+        public double challengerPosZ;
+
         public String display;
         public List<String> lore;
-        public List<Pokemon> gymPokemon = new ArrayList<>();
+        public List<Pokemon> gymPokemon;
+        
+        public boolean gymFee;
+        public boolean payLeader;
+        public double feeCost;
 
         public Gym(String key) {
+            this.gymFee = GymConfig.getConfig().get().getNode("Gyms", key, "Fee", "EnableFee").getBoolean();
+            this.payLeader = GymConfig.getConfig().get().getNode("Gyms", key, "Fee", "PayLeader").getBoolean();
+            this.feeCost = GymConfig.getConfig().get().getNode("Gyms", key, "Fee", "Fee").getDouble();
+            this.worldID = GymConfig.getConfig().get().getNode("Gyms", key, "Warp", "Entry", "WorldID").getInt();
+            this.posX = GymConfig.getConfig().get().getNode("Gyms", key, "Warp", "Entry", "X").getDouble();
+            this.posY = GymConfig.getConfig().get().getNode("Gyms", key, "Warp", "Entry", "Y").getDouble();
+            this.posZ = GymConfig.getConfig().get().getNode("Gyms", key, "Warp", "Entry", "Z").getDouble();
+
+            this.leaderWorldID = GymConfig.getConfig().get().getNode("Gyms", key, "Warp", "GymLeader", "WorldID").getInt();
+            this.leaderPosX = GymConfig.getConfig().get().getNode("Gyms", key, "Warp", "GymLeader", "X").getDouble();
+            this.leaderPosY = GymConfig.getConfig().get().getNode("Gyms", key, "Warp", "GymLeader", "Y").getDouble();
+            this.leaderPosZ = GymConfig.getConfig().get().getNode("Gyms", key, "Warp", "GymLeader", "Z").getDouble();
+
+            this.challengerWorldID = GymConfig.getConfig().get().getNode("Gyms", key, "Warp", "Challenger", "WorldID").getInt();
+            this.challengerPosX = GymConfig.getConfig().get().getNode("Gyms", key, "Warp", "Challenger", "X").getDouble();
+            this.challengerPosY = GymConfig.getConfig().get().getNode("Gyms", key, "Warp", "Challenger", "Y").getDouble();
+            this.challengerPosZ = GymConfig.getConfig().get().getNode("Gyms", key, "Warp", "Challenger", "Z").getDouble();
+
 
             this.badgeitemstring = GymConfig.getConfig().get().getNode("Gyms", key, "Badge").getString();
             this.key = key;
@@ -192,6 +226,8 @@ public class GymObj {
             pokemon.setAbility(ability);
             pokemon.setDynamaxLevel(dynamaxLevel);
             pokemon.setDoesLevel(false);
+
+            pokemon.addSpecFlag("gympokemon");
 
             return pokemon;
         }

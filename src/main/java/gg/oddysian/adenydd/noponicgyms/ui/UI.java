@@ -5,9 +5,10 @@ import ca.landonjw.gooeylibs.inventory.api.Page;
 import ca.landonjw.gooeylibs.inventory.api.Template;
 import com.pixelmonmod.pixelmon.config.PixelmonItemsTMs;
 import com.pixelmonmod.pixelmon.enums.technicalmoves.ITechnicalMove;
-import gg.oddysian.adenydd.noponicgyms.capability.interfaces.GymBadge;
-import gg.oddysian.adenydd.noponicgyms.obj.GymObj;
+import gg.oddysian.adenydd.noponicgyms.storage.capability.interfaces.GymBadge;
+import gg.oddysian.adenydd.noponicgyms.storage.obj.GymObj;
 import gg.oddysian.adenydd.noponicgyms.wrapper.GymPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
@@ -18,7 +19,7 @@ import java.util.List;
 
 public class UI {
 
-    private static ItemStack setDefaultIcon(String[] elements) {
+    private static ItemStack setDefaultIcon(String[] elements, boolean Enchanted) {
 
 
         boolean applyMeta = false;
@@ -83,27 +84,46 @@ public class UI {
         return formattedInfo;
     }
 
-
-    public static List<Button> playerBadges(GymPlayer player) {
+    public static List<Button> gyms(List<GymObj.Gym> gyms) {
         List<Button> buttonList = new ArrayList<>();
 
-        for (GymBadge b: player.getBadges()) {
-            String[] elements = b.getItemstring().split(" ");
-            System.out.println(b.getItemstring());
-            System.out.println(b.getBadgelore());
-            System.out.println(b.getBadgedisplay());
-            Button button = Button.builder().item(setDefaultIcon(elements)).lore(getFormattedList(b.getBadgelore())).displayName(getFormattedDisplayName(b.getBadgedisplay())).build();
+        for (GymObj.Gym gym: gyms) {
+            Button button = Button.builder().item(gym.gymBadge).lore(getFormattedList(gym.lore)).displayName(getFormattedDisplayName(gym.display)).build();
             buttonList.add(button);
+        }
+        return buttonList;
+    }
+
+    public static List<Button> playerBadges(GymPlayer player, EntityPlayerMP opener, boolean isSpying) {
+        List<Button> buttonList = new ArrayList<>();
+
+        if (!isSpying) {
+            for (GymBadge b : player.getBadges()) {
+                String[] elements = b.getItemstring().split(" ");
+                Button button = Button.builder().item(setDefaultIcon(elements, b.getObtained())).lore(getFormattedList(b.getBadgelore())).displayName(getFormattedDisplayName(b.getBadgedisplay())).build();
+                buttonList.add(button);
+            }
+        } else {
+            for (GymBadge b : player.getBadges()) {
+                String[] elements = b.getItemstring().split(" ");
+                Button button = Button.builder().item(setDefaultIcon(elements, b.getObtained())).lore(getFormattedList(b.getBadgelore())).displayName(getFormattedDisplayName(b.getBadgedisplay())).build();
+                buttonList.add(button);
+            }
         }
 
         return buttonList;
     }
 
-
-    public static Page gymBadges(GymPlayer gymPlayer) {
+    public static Page gyms(GymPlayer gymPlayer) {
         Template.Builder template = Template.builder(5);
         template.fill(filler());
-        return Page.builder().template(template.build()).dynamicContentArea(1, 1, 3, 7).dynamicContents(playerBadges(gymPlayer)).title("%player% Badges".replaceAll("%player%", gymPlayer.getPlayer().getName())).build();
+        return Page.builder().template(template.build()).title("Gyms").dynamicContentArea(1, 1, 3, 7).dynamicContents(gyms(GymObj.gyms)).build();
+    }
+
+    public static Page gymBadges(GymPlayer gymPlayer, EntityPlayerMP opener, boolean isSpying) {
+        Template.Builder template = Template.builder(5);
+        template.fill(filler());
+        return Page.builder().template(template.build()).dynamicContentArea(1, 1, 3, 7).dynamicContents(playerBadges(gymPlayer, opener, isSpying)).title("%player%'s Badges".replaceAll("%player%", gymPlayer.getPlayer().getName())).build();
     }
 
 }

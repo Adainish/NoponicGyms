@@ -1,14 +1,12 @@
 package gg.oddysian.adenydd.noponicgyms;
 
-import gg.oddysian.adenydd.noponicgyms.capability.GymBadgeCapability;
+import gg.oddysian.adenydd.noponicgyms.storage.capability.GymBadgeCapability;
 import gg.oddysian.adenydd.noponicgyms.commands.Command;
-import gg.oddysian.adenydd.noponicgyms.config.Config;
-import gg.oddysian.adenydd.noponicgyms.config.GymConfig;
+import gg.oddysian.adenydd.noponicgyms.storage.config.Config;
+import gg.oddysian.adenydd.noponicgyms.storage.config.GymConfig;
 import gg.oddysian.adenydd.noponicgyms.listener.PlayerListener;
-import gg.oddysian.adenydd.noponicgyms.obj.GymObj;
-import gg.oddysian.adenydd.noponicgyms.obj.ModeObj;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import gg.oddysian.adenydd.noponicgyms.storage.obj.GymObj;
+import gg.oddysian.adenydd.noponicgyms.storage.obj.ModeObj;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
