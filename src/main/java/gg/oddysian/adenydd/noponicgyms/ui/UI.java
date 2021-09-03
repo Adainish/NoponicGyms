@@ -7,9 +7,11 @@ import com.pixelmonmod.pixelmon.config.PixelmonItemsTMs;
 import com.pixelmonmod.pixelmon.enums.technicalmoves.ITechnicalMove;
 import gg.oddysian.adenydd.noponicgyms.storage.capability.interfaces.GymBadge;
 import gg.oddysian.adenydd.noponicgyms.storage.obj.GymObj;
+import gg.oddysian.adenydd.noponicgyms.storage.obj.ModeObj;
 import gg.oddysian.adenydd.noponicgyms.wrapper.GymPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -99,12 +101,16 @@ public class UI {
 
         if (!isSpying) {
             for (GymBadge b : player.getBadges()) {
+                if (!player.isBadge(b.getGym()))
+                    continue;
                 String[] elements = b.getItemstring().split(" ");
                 Button button = Button.builder().item(setDefaultIcon(elements, b.getObtained())).lore(getFormattedList(b.getBadgelore())).displayName(getFormattedDisplayName(b.getBadgedisplay())).build();
                 buttonList.add(button);
             }
         } else {
             for (GymBadge b : player.getBadges()) {
+                if (!player.isBadge(b.getGym()))
+                    continue;
                 String[] elements = b.getItemstring().split(" ");
                 Button button = Button.builder().item(setDefaultIcon(elements, b.getObtained())).lore(getFormattedList(b.getBadgelore())).displayName(getFormattedDisplayName(b.getBadgedisplay())).build();
                 buttonList.add(button);
@@ -118,6 +124,26 @@ public class UI {
         Template.Builder template = Template.builder(5);
         template.fill(filler());
         return Page.builder().template(template.build()).title("Gyms").dynamicContentArea(1, 1, 3, 7).dynamicContents(gyms(GymObj.gyms)).build();
+    }
+
+    public static Page tiers(GymPlayer gymPlayer) {
+        Template.Builder template = Template.builder(5);
+
+        int i = 0;
+        for (String s : ModeObj.modeList()) {
+            i++;
+            Button button = Button.builder()
+                    .displayName(s)
+                    .onClick(buttonAction -> {
+                        gyms(gymPlayer).forceOpenPage(gymPlayer.getPlayer());
+                    })
+                    .item(new ItemStack(Items.DIAMOND))
+                    .build();
+            template.set(3, i, button);
+        }
+
+        template.fill(filler());
+        return Page.builder().template(template.build()).title("Gyms").build();
     }
 
     public static Page gymBadges(GymPlayer gymPlayer, EntityPlayerMP opener, boolean isSpying) {

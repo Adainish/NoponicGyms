@@ -19,6 +19,7 @@ import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Command extends CommandBase {
@@ -117,6 +118,7 @@ public class Command extends CommandBase {
                         ServerUtils.send(sender, "&eYou're already in the queue for another Gym!");
                         return;
                     }
+                    gymPlayer.setQueued(true);
                     gymPlayer.setQueuedFor(gymPlayer, challengingGym, true);
                 }
             }
@@ -140,10 +142,38 @@ public class Command extends CommandBase {
         if (args.length == 1) {
             possibleArgs.add("reload");
             possibleArgs.add("badges");
-            possibleArgs.add("gymlist");
+            possibleArgs.add("list");
             possibleArgs.add("challenge");
             possibleArgs.add("queue");
-//            possibleArgs.addAll(Arrays.asList(server.getPlayerList().getOnlinePlayerNames()));
+            if (sender instanceof EntityPlayerMP && PermissionUtils.hasPermission(PermissionManager.LEADER_GIVE, (EntityPlayerMP) sender))
+            possibleArgs.add("givebadge");
+            if (sender instanceof EntityPlayerMP && PermissionUtils.hasPermission(PermissionManager.LEADER_TAKE, (EntityPlayerMP) sender))
+            possibleArgs.add("takebadge");
+//            possibleArgs.addAll(Arrays.asList(server.getPlayerList().getOnlinePlayerNames()));0
+        }
+        if (args.length == 2) {
+            if (args[0].equalsIgnoreCase("givebadge") && sender instanceof EntityPlayerMP && PermissionUtils.hasPermission(PermissionManager.LEADER_GIVE, (EntityPlayerMP) sender))
+                possibleArgs.addAll(Arrays.asList(server.getOnlinePlayerNames()));
+            if (args[0].equalsIgnoreCase("takebadge") && sender instanceof EntityPlayerMP && PermissionUtils.hasPermission(PermissionManager.LEADER_TAKE, (EntityPlayerMP) sender))
+                possibleArgs.addAll(Arrays.asList(server.getOnlinePlayerNames()));
+        }
+        if (args.length == 3) {
+            if (args[0].equalsIgnoreCase("givebadge") && sender instanceof EntityPlayerMP && PermissionUtils.hasPermission(PermissionManager.LEADER_GIVE, (EntityPlayerMP) sender))
+            {
+                GymPlayer gymPlayer = GymPlayer.gymPlayerHashMap.get(server.getPlayerList().getPlayerByUsername(args[1]));
+                if (gymPlayer == null) {
+                    possibleArgs.add("player does not exist");
+                } else
+                possibleArgs.addAll(gymPlayer.badgeList());
+            }
+            if (args[0].equalsIgnoreCase("takebadge") && sender instanceof EntityPlayerMP && PermissionUtils.hasPermission(PermissionManager.LEADER_TAKE, (EntityPlayerMP) sender))
+            {
+                GymPlayer gymPlayer = GymPlayer.gymPlayerHashMap.get(server.getPlayerList().getPlayerByUsername(args[1]));
+                if (gymPlayer == null) {
+                    possibleArgs.add("player does not exist");
+                } else
+                    possibleArgs.addAll(gymPlayer.badgeList());
+            }
         }
         return getListOfStringsMatchingLastWord(args, possibleArgs);
     }

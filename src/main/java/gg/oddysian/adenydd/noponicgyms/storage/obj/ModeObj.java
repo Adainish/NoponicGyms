@@ -15,7 +15,7 @@ public class ModeObj {
 
     public static void loadGymModes() {
         gymModes.clear();
-        CommentedConfigurationNode rootNode = GymConfig.getConfig().get().getNode("Gyms");
+        CommentedConfigurationNode rootNode = GymConfig.getConfig().get().getNode("Modes", "Tiers");
         Map nodeMap = rootNode.getChildrenMap();
 
         for (Object nodeObject : nodeMap.keySet()) {

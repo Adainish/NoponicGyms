@@ -7,39 +7,39 @@ import java.util.List;
 
 public interface IGymBadge extends INBTSerializable<NBTTagCompound> {
 
-    public void setObtained(boolean obtained);
+    void setObtained(boolean obtained);
 
-    public List<String> getBadgelore();
+    List<String> getBadgelore();
 
-    public void setBadgelore(List<String> badgelore);
+    void setBadgelore(List<String> badgelore);
 
-    public String getBadgedisplay();
+    String getBadgedisplay();
 
-    public void setBadgedisplay(String badgedisplay);
+    void setBadgedisplay(String badgedisplay);
 
-    public String getItemstring();
+    String getItemstring();
 
-    public void setItemstring(String itemstring);
+    void setItemstring(String itemstring);
 
-    public String getTier();
+    String getTier();
 
-    public void setTier(String tier);
+    void setTier(String tier);
 
-    public String getLeader();
+    String getLeader();
 
-    public String getGym();
+    String getGym();
 
-    public void setGym(String gym);
+    void setGym(String gym);
 
-    public void setPokemon(List<String> pokemonNames);
+    void setPokemon(List<String> pokemonNames);
 
-    public long getDate();
+    long getDate();
 
-    public void setLeader(String leader);
+    void setLeader(String leader);
 
-    public void setBadgeName(String badgeName);
+    void setBadgeName(String badgeName);
 
-    public Boolean getObtained();
+    Boolean getObtained();
 
     public void setDate(long date);
 

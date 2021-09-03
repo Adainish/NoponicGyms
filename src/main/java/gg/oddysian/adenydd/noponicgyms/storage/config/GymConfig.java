@@ -1,8 +1,11 @@
 package gg.oddysian.adenydd.noponicgyms.storage.config;
 
+import gg.oddysian.adenydd.noponicgyms.storage.obj.EnumTier;
 import lombok.SneakyThrows;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class GymConfig extends Configurable {
     private static GymConfig config;
@@ -24,8 +27,8 @@ public class GymConfig extends Configurable {
 
     @SneakyThrows
     public void populate() {
-        this.get().getNode("Modes", "Tiers").setValue(Arrays.asList("Tier1", "Tier2", "NPCGym"));
-        this.get().getNode("Gyms", "Example", "Tier").setValue("Tier1");
+        this.get().getNode("Modes", "Tiers").setValue(Arrays.asList("Tier1", "Tier2", "NPCGym")).setComment("The types of modes that exist");
+        this.get().getNode("Gyms", "Example", "Tier").setValue("Tier1").setComment("What tier does this belong to?");
         this.get().getNode("Gyms", "Example", "Warp", "GymLeader", "WorldID").setValue(0);
         this.get().getNode("Gyms", "Example", "Warp", "GymLeader", "X").setValue(100.00);
         this.get().getNode("Gyms", "Example" ,"Warp", "GymLeader", "Y").setValue(80.00);

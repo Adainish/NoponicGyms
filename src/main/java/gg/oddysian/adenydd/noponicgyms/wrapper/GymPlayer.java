@@ -23,26 +23,7 @@ public class GymPlayer {
     public boolean isQueuedFor(GymPlayer player, GymObj.Gym gym) {
         return gym.gymQueue.containsKey(player.getUuid());
     }
-
     private boolean queued;
-
-    public boolean isQueued() {
-        return queued;
-    }
-
-    public void setQueued(boolean queued) {
-        this.queued = queued;
-    }
-
-    public void setQueuedFor(GymPlayer player, GymObj.Gym gym, boolean add) {
-        if (add) {
-            if (!gym.gymQueue.containsKey(player.getUuid()))
-                gym.gymQueue.put(player.getUuid(), player);
-        } else {
-            if (gym.gymQueue.containsKey(player.getUuid()))
-                gym.gymQueue.remove(player.getUuid(), player);
-        }
-    }
 
     public GymPlayer(UUID uuid) {
         this.uuid = uuid;
@@ -55,6 +36,22 @@ public class GymPlayer {
 
     public List<String> badgeList() {
         return this.badges.stream().map(GymBadge::getGym).collect(Collectors.toList());
+    }
+
+    public boolean isQueued() {
+        return queued;
+    }
+    public void setQueued(boolean queued) {
+        this.queued = queued;
+    }
+    public void setQueuedFor(GymPlayer player, GymObj.Gym gym, boolean add) {
+        if (add) {
+            if (!gym.gymQueue.containsKey(player.getUuid()))
+                gym.gymQueue.put(player.getUuid(), player);
+        } else {
+            if (gym.gymQueue.containsKey(player.getUuid()))
+                gym.gymQueue.remove(player.getUuid(), player);
+        }
     }
 
     public boolean isBadge(String name) {
