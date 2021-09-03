@@ -89,8 +89,11 @@ public class GymBadge implements IGymBadge{
 
     public NBTTagCompound serializeNBT() {
         NBTTagCompound nbt = new NBTTagCompound();
+        if (badgeName != null && gym != null)
         nbt.setString(gym, badgeName);
+        if (badgeName != null)
         nbt.setBoolean(badgeName, obtained);
+        if (badgeName != null)
         nbt.setLong(badgeName, date);
         if (obtained && !pokemon.isEmpty())
         nbt.setTag("pokemon", nbtTagList(pokemon));
@@ -100,6 +103,7 @@ public class GymBadge implements IGymBadge{
     public void deserializeNBT(NBTTagCompound nbt) {
         nbt.getString(gym);
         nbt.getBoolean(badgeName);
+        if (nbt.getBoolean(badgeName))
         nbt.getLong(badgeName);
         if (nbt.getBoolean(badgeName))
         nbt.getTag("pokemon");
