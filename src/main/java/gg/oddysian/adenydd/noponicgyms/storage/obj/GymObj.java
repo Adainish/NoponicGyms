@@ -171,7 +171,7 @@ public class GymObj {
             String nature = GymConfig.getConfig().get().getNode("Gyms", gymKey, "GymPokemon", node, "Stats", "Nature").getString();
             String ability = GymConfig.getConfig().get().getNode("Gyms", gymKey, "GymPokemon", node, "Stats", "Ability").getString();
             int dynamaxLevel = GymConfig.getConfig().get().getNode("Gyms", gymKey, "GymPokemon", node, "Dynamax").getInt();
-
+            String heldItem = GymConfig.getConfig().get().getNode("Gyms", gymKey, "GymPokemon", node, "HeldItem").getString();
 
             //Evs
 
@@ -211,6 +211,13 @@ public class GymObj {
                 if (!nickname.isEmpty())
                     pokemon.setNickname(nickname);
             }
+
+            if (heldItem != null)
+                if (!heldItem.isEmpty()) {
+                    ItemStack itemStack = new ItemStack(Item.getByNameOrId(heldItem));
+                    if (itemStack != null)
+                    pokemon.setHeldItem(itemStack); else NoponicGyms.log.error("The ItemStack couldn't be created for rental pokemon %pokemon%".replaceAll("%pokemon%", pokemonname));
+                }
 
             if (form != 0)
                 pokemon.setForm(form);

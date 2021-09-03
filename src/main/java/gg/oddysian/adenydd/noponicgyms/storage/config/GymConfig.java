@@ -49,6 +49,7 @@ public class GymConfig extends Configurable {
         this.get().getNode("Gyms", "Example", "UI", "Lore").setValue(Arrays.asList("&cThis is the %gym% Gym", "The following leaders are online: %availableleaders%", "Gym Level: %gymlevel%"));
         this.get().getNode("Gyms", "Example", "Badge").setValue("minecraft:paper");
         this.get().getNode("Gyms", "Example", "GymPokemon", "Vulpix", "PokemonName").setValue("Vulpix");
+        this.get().getNode("Gyms", "Example", "GymPokemon", "Vulpix", "HeldItem").setValue("pixelmon:leftovers");
         this.get().getNode("Gyms", "Example", "GymPokemon", "Vulpix", "Level").setValue(10).setComment("The Pokemons level if raise to cap was not enabled");
         this.get().getNode("Gyms", "Example", "GymPokemon", "Vulpix", "Form").setValue(0).setComment("Decide the form for this pokemon, leave blank if none are to be set");
         this.get().getNode("Gyms", "Example", "GymPokemon", "Vulpix", "NickName").setValue("").setComment("Set the Pokemons Nick Name in Battle!");
@@ -79,6 +80,7 @@ public class GymConfig extends Configurable {
 
 
         this.get().getNode("Gyms", "Example", "GymPokemon", "Ninetales", "PokemonName").setValue("Ninetales");
+        this.get().getNode("Gyms", "Example", "GymPokemon", "Ninetales", "HeldItem").setValue("pixelmon:leftovers");
         this.get().getNode("Gyms", "Example", "GymPokemon", "Ninetales", "Form").setValue(0).setComment("Decide the form for this pokemon, leave blank if none are to be set");
         this.get().getNode("Gyms", "Example", "GymPokemon", "Ninetales", "NickName").setValue("").setComment("Set the Pokemons Nick Name in Battle!");
         this.get().getNode("Gyms", "Example", "GymPokemon", "Ninetales", "Shiny").setValue(false).setComment("Is this Pokemon Shiny?");
