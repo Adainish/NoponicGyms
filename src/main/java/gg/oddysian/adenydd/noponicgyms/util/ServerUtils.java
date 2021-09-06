@@ -16,6 +16,9 @@ public class ServerUtils {
         return isPlayerOnline(player.getUniqueID());
     }
 
+    public static EntityPlayerMP getPlayer(String player) {
+        return getInstance().getPlayerList().getPlayerByUsername(player);
+    }
     public static boolean isPlayerOnline(UUID uuid) {
         EntityPlayerMP player = SERVER.getPlayerList().getPlayerByUUID(uuid);
         // IJ says it's always true ignore

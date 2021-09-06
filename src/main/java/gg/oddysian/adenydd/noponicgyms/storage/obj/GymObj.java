@@ -78,6 +78,7 @@ public class GymObj {
     }
 
     public static class Gym {
+        public List<String> gymLeaderList = new ArrayList<>();
         public HashMap<UUID, GymPlayer> gymQueue = new HashMap<>();
         public ItemStack gymBadge;
         public String key;
@@ -85,6 +86,7 @@ public class GymObj {
         public String tier;
         public String leadermessage;
         public String badgeitemstring;
+        public boolean opened;
         public int levelcap;
         public int worldID;
         public double posX;
@@ -110,6 +112,7 @@ public class GymObj {
         public double feeCost;
 
         public Gym(String key) {
+            this.opened = false;
             this.gymFee = GymConfig.getConfig().get().getNode("Gyms", key, "Fee", "EnableFee").getBoolean();
             this.payLeader = GymConfig.getConfig().get().getNode("Gyms", key, "Fee", "PayLeader").getBoolean();
             this.feeCost = GymConfig.getConfig().get().getNode("Gyms", key, "Fee", "Fee").getDouble();

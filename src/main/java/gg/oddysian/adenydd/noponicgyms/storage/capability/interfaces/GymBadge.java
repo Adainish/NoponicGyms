@@ -15,7 +15,7 @@ public class GymBadge implements IGymBadge{
     private String badgedisplay;
     private List<String> badgelore = new ArrayList<>();
     private boolean obtained;
-    private long date;
+    private String date;
     private List<String> pokemon = new ArrayList<>();
     private String leader;
 
@@ -27,7 +27,7 @@ public class GymBadge implements IGymBadge{
     }
 
     @Override
-    public long getDate() {
+    public String getDate() {
         return date;
     }
 
@@ -42,12 +42,17 @@ public class GymBadge implements IGymBadge{
     }
 
     @Override
+    public String getBadgeName() {
+        return badgeName;
+    }
+
+    @Override
     public Boolean getObtained() {
         return this.obtained;
     }
 
     @Override
-    public void setDate(long date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
@@ -94,7 +99,7 @@ public class GymBadge implements IGymBadge{
         if (badgeName != null)
         nbt.setBoolean(badgeName, obtained);
         if (badgeName != null)
-        nbt.setLong(badgeName, date);
+        nbt.setString(badgeName, date);
         if (obtained && !pokemon.isEmpty())
         nbt.setTag("pokemon", nbtTagList(pokemon));
         return nbt;

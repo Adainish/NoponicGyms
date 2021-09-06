@@ -33,15 +33,17 @@ public interface IGymBadge extends INBTSerializable<NBTTagCompound> {
 
     void setPokemon(List<String> pokemonNames);
 
-    long getDate();
+    String getDate();
 
     void setLeader(String leader);
 
     void setBadgeName(String badgeName);
 
+    String getBadgeName();
+
     Boolean getObtained();
 
-    public void setDate(long date);
+    public void setDate(String date);
 
     public void addPokemon(String pokemon);
 }

@@ -23,6 +23,9 @@ public class GymPlayer {
     public boolean isQueuedFor(GymPlayer player, GymObj.Gym gym) {
         return gym.gymQueue.containsKey(player.getUuid());
     }
+    private String queuedFor;
+
+
     private boolean queued;
 
     public GymPlayer(UUID uuid) {
@@ -52,6 +55,14 @@ public class GymPlayer {
             if (gym.gymQueue.containsKey(player.getUuid()))
                 gym.gymQueue.remove(player.getUuid(), player);
         }
+    }
+
+    public String getQueuedForGym() {
+        return queuedFor;
+    }
+
+    public void setQueuedForGym(String queuedFor) {
+        this.queuedFor = queuedFor;
     }
 
     public boolean isBadge(String name) {
@@ -105,9 +116,6 @@ public class GymPlayer {
     }
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
-    }
-    public void updateBadges(GymBadge badge) {
-        this.badges.add(badge);
     }
 
     public void loadBadges() {
