@@ -158,7 +158,12 @@ public class GymObj {
                 if (obj == null)
                     continue;
                 String nodestring = obj.toString();
-                gymPokemon.add(generateGymPokemon(gymKey, nodestring));
+                if (generateGymPokemon(gymKey, nodestring) == null) {
+                    NoponicGyms.log.error("There was an error generating the Pokemon for " + gymKey + " " + nodestring);
+                    continue;
+                }
+                Pokemon pokemon = generateGymPokemon(gymKey, nodestring);
+                gymPokemon.add(pokemon);
 
             }
             return gymPokemon;
@@ -193,6 +198,14 @@ public class GymObj {
             int ivsSPDEF = GymConfig.getConfig().get().getNode("Gyms", gymKey, "GymPokemon", node, "Stats", "IVS", "SPDEF").getInt();
             int ivsSPD = GymConfig.getConfig().get().getNode("Gyms", gymKey, "GymPokemon", node, "Stats", "IVS", "SPD").getInt();
 
+            if (pokemonname == null) {
+                NoponicGyms.log.info("The PokemonName doesn't exist, please check your config!");
+                return null;
+            }
+            if (EnumSpecies.getFromNameAnyCase(pokemonname) == null) {
+                NoponicGyms.log.info("The Pokemon Species %mon% doesn't exist!".replaceAll("%mon%", pokemonname));
+                return null;
+            }
             Pokemon pokemon = Pixelmon.pokemonFactory.create(EnumSpecies.getFromNameAnyCase(pokemonname));
             pokemon.setLevel(level);
 

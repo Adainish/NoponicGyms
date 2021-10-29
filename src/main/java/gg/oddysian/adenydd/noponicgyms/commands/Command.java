@@ -224,7 +224,19 @@ public class Command extends CommandBase {
                     GymMethods.takeGymBadge(gymPlayer, gymBadge);
                 }
             }
-        }
+        } else {
+            if (arguments.length == 1) {
+                if (arguments[0].contains("reload")) {
+
+                        NoponicGyms.INSTANCE.loadConfig();
+                        NoponicGyms.INSTANCE.initOBJ();
+                        ServerUtils.send(sender, "&cReloaded All Configs!, Check the console for Errors!");
+                    } else {
+                        ServerUtils.send(sender, "&b(&e!&b) &eYou're not allowed to use this!");
+                    }
+                }
+
+            }
     }
 
     @Override
