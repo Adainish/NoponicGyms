@@ -1,5 +1,6 @@
 package gg.oddysian.adenydd.noponicgyms;
 
+import gg.oddysian.adenydd.noponicgyms.storage.capability.BadgeCapability;
 import gg.oddysian.adenydd.noponicgyms.storage.capability.GymBadgeCapability;
 import gg.oddysian.adenydd.noponicgyms.commands.Command;
 import gg.oddysian.adenydd.noponicgyms.storage.config.Config;
@@ -50,7 +51,7 @@ public class NoponicGyms {
         loadConfig(); //Load all configs
 
         GymBadgeCapability.register(); //Registering Badge Storage Data for Handling
-
+        BadgeCapability.register(); //Register Active Badges from Config
         playerListener = new PlayerListener();
     }
 

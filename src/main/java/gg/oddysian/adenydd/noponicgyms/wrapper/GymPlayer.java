@@ -1,5 +1,6 @@
 package gg.oddysian.adenydd.noponicgyms.wrapper;
 
+import gg.oddysian.adenydd.noponicgyms.storage.capability.BadgeCapability;
 import gg.oddysian.adenydd.noponicgyms.storage.capability.interfaces.GymBadge;
 import gg.oddysian.adenydd.noponicgyms.storage.obj.GymObj;
 import gg.oddysian.adenydd.noponicgyms.util.ServerUtils;
@@ -121,6 +122,7 @@ public class GymPlayer {
     public void loadBadges() {
         for (GymObj.Gym gym:gymList) {
             GymBadge gymBadge = new GymBadge();
+
             gymBadge.setGym(gym.key);
             gymBadge.setBadgeName(gym.display);
             gymBadge.setItemstring(gym.badgeitemstring);
@@ -129,5 +131,6 @@ public class GymPlayer {
             badges.add(gymBadge);
             badgeList().add(gym.key);
         }
+        player.getCapability(BadgeCapability.I_GYM_BADGES_CAPABILITY, null).setBadges(badgeList());
     }
 }

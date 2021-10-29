@@ -183,9 +183,8 @@ public class Command extends CommandBase {
                         return;
                     }
 
-                    IGymBadge gymBadge = gymPlayer.getPlayer().getCapability(GymBadgeCapability.I_GYM_BADGE_CAPABILITY, null);
 //                    GymBadge gymBadge = gymPlayer.getBadge(arguments[2]);
-                    if (gymBadge == null) {
+                    if (badge == null) {
                         ServerUtils.send(sender, "&4That's not a valid Gym Badge!");
                         return;
                     }
@@ -202,8 +201,9 @@ public class Command extends CommandBase {
                     }
                     badge.setLeader(leader.getName());
                     badge.setObtained(true);
+//                    gymPlayer.getPlayer().getCapability(GymBadgeCapability.I_GYM_BADGE_CAPABILITY, null).setBadgelore();
 
-                    GymMethods.giveGymBadge(gymPlayer, gymBadge);
+                    GymMethods.giveGymBadge(gymPlayer, badge);
 
                 }
                 if (arguments[0].equalsIgnoreCase("takebadge")) {

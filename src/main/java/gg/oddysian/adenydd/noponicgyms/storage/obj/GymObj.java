@@ -4,6 +4,7 @@ import com.google.common.reflect.TypeToken;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.config.PixelmonItemsTMs;
+import com.pixelmonmod.pixelmon.entities.pixelmon.abilities.AbilityBase;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.StatsType;
 import com.pixelmonmod.pixelmon.enums.EnumNature;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
@@ -83,33 +84,33 @@ public class GymObj {
         public ItemStack gymBadge;
         public String key;
         public String permission = "DEFAULT IMAGE";
-        public String tier;
-        public String leadermessage;
-        public String badgeitemstring;
-        public boolean opened;
-        public int levelcap;
-        public int worldID;
-        public double posX;
-        public double posY;
-        public double posZ;
+        public String tier = "";
+        public String leadermessage = "";
+        public String badgeitemstring = "minecraft:paper";
+        public boolean opened = false;
+        public int levelcap = 10;
+        public int worldID = 0;
+        public double posX = 0.0;
+        public double posY = 0.0;
+        public double posZ = 0.0;
 
-        public int leaderWorldID;
-        public double leaderPosX;
-        public double leaderPosY;
-        public double leaderPosZ;
+        public int leaderWorldID = 0;
+        public double leaderPosX= 0.0;
+        public double leaderPosY = 0.0;
+        public double leaderPosZ = 0.0;
 
-        public int challengerWorldID;
-        public double challengerPosX;
-        public double challengerPosY;
-        public double challengerPosZ;
+        public int challengerWorldID = 0;
+        public double challengerPosX = 0.0;
+        public double challengerPosY = 0.0;
+        public double challengerPosZ = 0.0;
 
-        public String display;
-        public List<String> lore;
-        public List<Pokemon> gymPokemon;
+        public String display = "";
+        public List<String> lore = new ArrayList<>();
+        public List<Pokemon> gymPokemon = new ArrayList<>();
         
-        public boolean gymFee;
-        public boolean payLeader;
-        public double feeCost;
+        public boolean gymFee = true;
+        public boolean payLeader = true;
+        public double feeCost = 100.00;
 
         public Gym(String key) {
             this.opened = false;
@@ -218,8 +219,9 @@ public class GymObj {
             if (heldItem != null)
                 if (!heldItem.isEmpty()) {
                     ItemStack itemStack = new ItemStack(Item.getByNameOrId(heldItem));
-                    if (itemStack != null)
-                    pokemon.setHeldItem(itemStack); else NoponicGyms.log.error("The ItemStack couldn't be created for rental pokemon %pokemon%".replaceAll("%pokemon%", pokemonname));
+                    if (itemStack != null) //Ignore, this can still be null due to the String being editable by administrators
+                    pokemon.setHeldItem(itemStack);
+                    else NoponicGyms.log.error("The ItemStack couldn't be created for rental pokemon %pokemon%".replaceAll("%pokemon%", pokemonname));
                 }
 
             if (form != 0)
@@ -228,12 +230,15 @@ public class GymObj {
             pokemon.setShiny(shiny);
 
             if (texture != null) {
-                if (!nickname.isEmpty())
+                if (!texture.isEmpty())
                     pokemon.setCustomTexture(texture);
             }
 
+            if (EnumNature.natureFromString(nature) != null)
             pokemon.setNature(EnumNature.natureFromString(nature));
-            pokemon.setAbility(ability);
+            else NoponicGyms.log.info("There was an issue generating the nature for %pokemon%, please check your config for any errors");
+            if (AbilityBase.getAbility(ability).isPresent())
+            pokemon.setAbility(ability); else NoponicGyms.log.info("There was an issue generating the ability for %pokemon%, please check your config for any errors");
             pokemon.setDynamaxLevel(dynamaxLevel);
             pokemon.setDoesLevel(false);
 
@@ -266,8 +271,10 @@ public class GymObj {
 
                         String mv = elements[0].replaceAll("pixelmon:", "");
 
-                        ITechnicalMove technicalMove = ITechnicalMove.getMoveFor(mv, Integer.valueOf(elements[1]));
+                        ITechnicalMove technicalMove = ITechnicalMove.getMoveFor(mv, Integer.parseInt(elements[1]));
 
+                        if (technicalMove == null)
+                            NoponicGyms.log.info("There was an issue generating the gym badge item, please check your console for any errors");
                         return  PixelmonItemsTMs.createStackFor(technicalMove);
 
                     }
@@ -279,12 +286,16 @@ public class GymObj {
             if (op != null) {
                 itemType = new ItemStack(op);
                 if (applyMeta) {
-                    itemType.setItemDamage(Integer.valueOf(elements[1]));
+                    itemType.setItemDamage(Integer.parseInt(elements[1]));
                 }
+                if (itemType == null)
+                    NoponicGyms.log.info("There was an issue generating the gym badge item, please check your console for any errors");
                 return itemType;
             }
 
             itemType = new ItemStack(op);
+            if (itemType == null)
+                NoponicGyms.log.info("There was an issue generating the gym badge item, please check your console for any errors");
             return itemType;
         }
     }
