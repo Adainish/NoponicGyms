@@ -5,12 +5,13 @@ import ca.landonjw.gooeylibs.inventory.api.Page;
 import ca.landonjw.gooeylibs.inventory.api.Template;
 import com.pixelmonmod.pixelmon.config.PixelmonItemsTMs;
 import com.pixelmonmod.pixelmon.enums.technicalmoves.ITechnicalMove;
-import gg.oddysian.adenydd.noponicgyms.storage.capability.interfaces.GymBadge;
+import gg.oddysian.adenydd.noponicgyms.storage.obj.GymBadge;
 import gg.oddysian.adenydd.noponicgyms.storage.obj.GymObj;
+import gg.oddysian.adenydd.noponicgyms.storage.obj.GymPlayer;
 import gg.oddysian.adenydd.noponicgyms.storage.obj.ModeObj;
-import gg.oddysian.adenydd.noponicgyms.wrapper.GymPlayer;
+import gg.oddysian.adenydd.noponicgyms.util.ServerUtils;
+import gg.oddysian.adenydd.noponicgyms.wrapper.GymPlayerWrapper;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumDyeColor;
@@ -118,7 +119,7 @@ public class UI {
 
         if (!isSpying) {
             for (GymBadge b : player.getBadges()) {
-                if (!player.isBadge(b.getGym()))
+                if (!player.hasSpecificBadge(b.getBadgeName()))
                     continue;
                 String[] elements = b.getItemstring().split(" ");
                 String display = b.getBadgedisplay();
@@ -133,7 +134,7 @@ public class UI {
             }
         } else {
             for (GymBadge b : player.getBadges()) {
-                if (!player.isBadge(b.getGym()))
+                if (!player.hasSpecificBadge(b.getBadgeName()))
                     continue;
                 String[] elements = b.getItemstring().split(" ");
                 String display = b.getBadgedisplay();
@@ -141,7 +142,7 @@ public class UI {
                 ItemStack stack = setDefaultIcon(elements, b.getObtained());
                 if (b.getObtained()) {
                     display = b.getBadgedisplay();
-                    lore = Arrays.asList("&e%player% defeated the %gym%".replaceAll("%gym%", b.getBadgeName()).replaceAll("%player%", player.getPlayer().getName()));
+                    lore = Arrays.asList("&e%player% defeated the %gym%".replaceAll("%gym%", b.getBadgeName()).replaceAll("%player%", player.getName()));
                 }
                 Button button = Button.builder().item(stack).lore(getFormattedList(lore)).displayName(getFormattedDisplayName(display)).build();
                 buttonList.add(button);
@@ -151,13 +152,13 @@ public class UI {
         return buttonList;
     }
 
-    public static Page gyms(GymPlayer gymPlayer) {
+    public static Page gyms() {
         Template.Builder template = Template.builder(5);
         template.fill(filler());
         return Page.builder().template(template.build()).title("Gyms").dynamicContentArea(1, 1, 3, 7).dynamicContents(gyms(GymObj.gyms)).build();
     }
 
-    public static Page tiers(GymPlayer gymPlayer) {
+    public static Page tiers(GymPlayer gymPlayerWrapper) {
         Template.Builder template = Template.builder(5);
 
         int i = 0;
@@ -166,7 +167,7 @@ public class UI {
             Button button = Button.builder()
                     .displayName(s)
                     .onClick(buttonAction -> {
-                        gyms(gymPlayer).forceOpenPage(gymPlayer.getPlayer());
+                        gyms().forceOpenPage(ServerUtils.getPlayer(gymPlayerWrapper.getName()));
                     })
                     .item(new ItemStack(Items.DIAMOND))
                     .build();
@@ -180,7 +181,7 @@ public class UI {
     public static Page gymBadges(GymPlayer gymPlayer, boolean isSpying) {
         Template.Builder template = Template.builder(5);
         template.fill(filler());
-        return Page.builder().template(template.build()).dynamicContentArea(1, 1, 3, 7).dynamicContents(playerBadges(gymPlayer, isSpying)).title("%player%'s Badges".replaceAll("%player%", gymPlayer.getPlayer().getName())).build();
+        return Page.builder().template(template.build()).dynamicContentArea(1, 1, 3, 7).dynamicContents(playerBadges(gymPlayer, isSpying)).title("%player%'s Badges".replaceAll("%player%", gymPlayer.getName())).build();
     }
 
 }

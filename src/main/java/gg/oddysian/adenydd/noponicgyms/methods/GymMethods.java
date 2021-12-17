@@ -1,9 +1,10 @@
 package gg.oddysian.adenydd.noponicgyms.methods;
 
-import gg.oddysian.adenydd.noponicgyms.storage.capability.interfaces.IGymBadge;
+import gg.oddysian.adenydd.noponicgyms.storage.obj.GymBadge;
 import gg.oddysian.adenydd.noponicgyms.storage.obj.GymObj;
+import gg.oddysian.adenydd.noponicgyms.storage.obj.GymPlayer;
 import gg.oddysian.adenydd.noponicgyms.util.ServerUtils;
-import gg.oddysian.adenydd.noponicgyms.wrapper.GymPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 
 public class GymMethods {
 
@@ -11,14 +12,15 @@ public class GymMethods {
 
     }
 
-    public static void giveGymBadge(GymPlayer gymPlayer, IGymBadge gymBadge) {
+    public static void giveGymBadge(GymPlayer gymPlayer, GymBadge gymBadge) {
 
-        ServerUtils.send(gymPlayer.getPlayer(), "&eCongrats on beating the %gym%&e and obtaining the %badge%".replaceAll("%gym%", gymBadge.getGym()).replaceAll("%badge%", gymBadge.getBadgeName()));
-        ServerUtils.doBroadcast("&c%player% has defeated the %gym% and obtained the %badge% badge".replaceAll("%player%", gymPlayer.getPlayer().getName()).replaceAll("%gym%", gymBadge.getGym()).replaceAll("%badge%", gymBadge.getBadgeName()));
+        EntityPlayerMP playerMP = ServerUtils.getPlayer(gymPlayer.getName());
+        ServerUtils.send(playerMP, "&eCongrats on beating the %gym%&e and obtaining the %badge%".replaceAll("%gym%", gymBadge.getGym()).replaceAll("%badge%", gymBadge.getBadgeName()));
+        ServerUtils.doBroadcast("&c%player% has defeated the %gym% and obtained the %badge% badge".replaceAll("%player%", gymPlayer.getName()).replaceAll("%gym%", gymBadge.getGym()).replaceAll("%badge%", gymBadge.getBadgeName()));
     }
 
-    public static void takeGymBadge(GymPlayer gymPlayer, IGymBadge gymBadge) {
-        ServerUtils.send(gymPlayer.getPlayer(), "&cYour %badge% &cwas taken away by a Gym Leader!".replaceAll("%badge%", gymBadge.getBadgeName()));
+    public static void takeGymBadge(GymPlayer gymPlayer, GymBadge gymBadge) {
+        ServerUtils.send(ServerUtils.getPlayer(gymPlayer.getName()), "&cYour %badge% &cwas taken away by a Gym Leader!".replaceAll("%badge%", gymBadge.getBadgeName()));
     }
 
     public static void takeChallenge() {

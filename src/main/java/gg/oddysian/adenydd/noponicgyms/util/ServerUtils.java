@@ -1,12 +1,18 @@
 package gg.oddysian.adenydd.noponicgyms.util;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import gg.oddysian.adenydd.noponicgyms.storage.config.Config;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import org.apache.commons.io.IOUtils;
 
+import java.net.URL;
 import java.util.UUID;
 
 public class ServerUtils {
@@ -14,6 +20,20 @@ public class ServerUtils {
 
     public static boolean isPlayerOnline(EntityPlayerMP player) {
         return isPlayerOnline(player.getUniqueID());
+    }
+
+    public String getUserName(String uuid){
+        String url = "https://api.mojang.com/user/profiles/" + uuid.replace("-", "")+"/names";
+        try {
+            String json = IOUtils.toString(new URL(url));
+            JsonElement element = new JsonParser().parse(json);
+            JsonArray nameArray = element.getAsJsonArray();
+            JsonObject nameElement = nameArray.get(nameArray.size()-1).getAsJsonObject();
+            nameElement.get("name").toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
     public static EntityPlayerMP getPlayer(String player) {

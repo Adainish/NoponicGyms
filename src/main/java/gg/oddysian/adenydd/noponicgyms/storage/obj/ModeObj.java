@@ -26,7 +26,6 @@ public class ModeObj {
                 if (node == null) {
                     NoponicGyms.log.info(node + "MODE NODE NULL");
                 } else {
-                    NoponicGyms.log.info(node + "NEW MODE ADDED");
                     gymModes.add(new Mode(node));
                 }
             }

@@ -1,7 +1,5 @@
 package gg.oddysian.adenydd.noponicgyms;
 
-import gg.oddysian.adenydd.noponicgyms.storage.capability.BadgeCapability;
-import gg.oddysian.adenydd.noponicgyms.storage.capability.GymBadgeCapability;
 import gg.oddysian.adenydd.noponicgyms.commands.Command;
 import gg.oddysian.adenydd.noponicgyms.storage.config.Config;
 import gg.oddysian.adenydd.noponicgyms.storage.config.GymConfig;
@@ -32,6 +30,8 @@ public class NoponicGyms {
     public static final List<String> AUTHORS = Arrays.asList("Adenydd");
     public static Logger log = LogManager.getLogger(MOD_NAME);
     public static File configDir;
+    public static File dataDir;
+
     @Mod.Instance(MOD_ID)
     public static NoponicGyms INSTANCE;
 
@@ -42,16 +42,15 @@ public class NoponicGyms {
     public void preinit(FMLPreInitializationEvent event) {
 
         log.info("Meh Meh! Tora booting up " + MOD_NAME + " by Miss DevPon " + AUTHORS + " " + VERSION + " - 2021" + "to make Server better than any ServerPon!\n Poppi at your service!");
-
         configDir = new File(event.getModConfigurationDirectory() + "/");
         configDir.mkdir();
 
-        initConfig(); //Init all Configs
+        dataDir = new File(event.getModConfigurationDirectory() + "/NoponicGyms/data");
+        dataDir.mkdir();
 
+        initConfig(); //Init all Configs
         loadConfig(); //Load all configs
 
-        GymBadgeCapability.register(); //Registering Badge Storage Data for Handling
-        BadgeCapability.register(); //Register Active Badges from Config
         playerListener = new PlayerListener();
     }
 
@@ -59,7 +58,6 @@ public class NoponicGyms {
     public void starting(FMLServerStartingEvent event) {
 
         initOBJ();
-
         event.registerServerCommand(new Command());
     }
 

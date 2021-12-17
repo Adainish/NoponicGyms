@@ -1,12 +1,10 @@
-package gg.oddysian.adenydd.noponicgyms.storage.capability.interfaces;
+package gg.oddysian.adenydd.noponicgyms.storage.obj;
 
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-
+import gg.oddysian.adenydd.noponicgyms.storage.capability.interfaces.IGymBadge;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GymBadge implements IGymBadge{
+public class GymBadge implements IGymBadge {
 
     private String gym;
     private String badgeName;
@@ -79,39 +77,6 @@ public class GymBadge implements IGymBadge{
 
     public void setGym(String gym) {
         this.gym = gym;
-    }
-
-    public NBTTagList nbtTagList(List<String> list) {
-        NBTTagList nbtTagList = new NBTTagList();
-        for (String s:list) {
-            NBTTagCompound nbt = new NBTTagCompound();
-            nbt.setString("pokemon", s);
-            nbtTagList.appendTag(nbt);
-        }
-
-        return nbtTagList;
-    }
-
-    public NBTTagCompound serializeNBT() {
-        NBTTagCompound nbt = new NBTTagCompound();
-        if (badgeName != null && gym != null)
-        nbt.setString(gym, badgeName);
-        if (badgeName != null)
-        nbt.setBoolean(badgeName, obtained);
-        if (badgeName != null)
-        nbt.setString(badgeName, date);
-        if (obtained && !pokemon.isEmpty())
-        nbt.setTag("pokemon", nbtTagList(pokemon));
-        return nbt;
-    }
-
-    public void deserializeNBT(NBTTagCompound nbt) {
-        nbt.getString(gym);
-        nbt.getBoolean(badgeName);
-        if (nbt.getBoolean(badgeName))
-        nbt.getLong(badgeName);
-        if (nbt.getBoolean(badgeName))
-        nbt.getTag("pokemon");
     }
 
     public void setObtained(boolean obtained) {

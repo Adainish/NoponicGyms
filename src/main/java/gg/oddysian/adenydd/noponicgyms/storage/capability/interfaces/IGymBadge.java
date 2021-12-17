@@ -5,7 +5,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.List;
 
-public interface IGymBadge extends INBTSerializable<NBTTagCompound> {
+public interface IGymBadge {
 
     void setObtained(boolean obtained);
 

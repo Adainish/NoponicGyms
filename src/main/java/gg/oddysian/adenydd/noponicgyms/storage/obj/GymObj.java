@@ -11,7 +11,7 @@ import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import com.pixelmonmod.pixelmon.enums.technicalmoves.ITechnicalMove;
 import gg.oddysian.adenydd.noponicgyms.NoponicGyms;
 import gg.oddysian.adenydd.noponicgyms.storage.config.GymConfig;
-import gg.oddysian.adenydd.noponicgyms.wrapper.GymPlayer;
+import gg.oddysian.adenydd.noponicgyms.wrapper.GymPlayerWrapper;
 import info.pixelmon.repack.ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import info.pixelmon.repack.ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import net.minecraft.item.Item;
@@ -80,7 +80,7 @@ public class GymObj {
 
     public static class Gym {
         public List<String> gymLeaderList = new ArrayList<>();
-        public HashMap<UUID, GymPlayer> gymQueue = new HashMap<>();
+        public HashMap<UUID, GymPlayerWrapper> gymQueue = new HashMap<>();
         public ItemStack gymBadge;
         public String key;
         public String permission = "DEFAULT IMAGE";
@@ -202,10 +202,12 @@ public class GymObj {
                 NoponicGyms.log.info("The PokemonName doesn't exist, please check your config!");
                 return null;
             }
+
             if (EnumSpecies.getFromNameAnyCase(pokemonname) == null) {
                 NoponicGyms.log.info("The Pokemon Species %mon% doesn't exist!".replaceAll("%mon%", pokemonname));
                 return null;
             }
+
             Pokemon pokemon = Pixelmon.pokemonFactory.create(EnumSpecies.getFromNameAnyCase(pokemonname));
             pokemon.setLevel(level);
 
@@ -249,12 +251,15 @@ public class GymObj {
 
             if (EnumNature.natureFromString(nature) != null)
             pokemon.setNature(EnumNature.natureFromString(nature));
-            else NoponicGyms.log.info("There was an issue generating the nature for %pokemon%, please check your config for any errors");
+            else {
+                pokemon.setNature(EnumNature.getRandomNature());
+                NoponicGyms.log.info("There was an issue generating the nature for %pokemon%, please check your config for any errors");
+            }
             if (AbilityBase.getAbility(ability).isPresent())
-            pokemon.setAbility(ability); else NoponicGyms.log.info("There was an issue generating the ability for %pokemon%, please check your config for any errors");
+            pokemon.setAbility(ability);
+            else NoponicGyms.log.info("There was an issue generating the ability for %pokemon%, please check your config for any errors");
             pokemon.setDynamaxLevel(dynamaxLevel);
             pokemon.setDoesLevel(false);
-
             pokemon.addSpecFlag("gympokemon");
 
             return pokemon;

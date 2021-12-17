@@ -1,8 +1,8 @@
 package gg.oddysian.adenydd.noponicgyms.wrapper;
 
-import gg.oddysian.adenydd.noponicgyms.storage.capability.BadgeCapability;
-import gg.oddysian.adenydd.noponicgyms.storage.capability.interfaces.GymBadge;
+import gg.oddysian.adenydd.noponicgyms.storage.obj.GymBadge;
 import gg.oddysian.adenydd.noponicgyms.storage.obj.GymObj;
+import gg.oddysian.adenydd.noponicgyms.storage.obj.GymPlayer;
 import gg.oddysian.adenydd.noponicgyms.util.ServerUtils;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
-public class GymPlayer {
+public class GymPlayerWrapper {
     public static HashMap<UUID, GymPlayer> gymPlayerHashMap = new HashMap<>();
 
     private EntityPlayerMP player;
@@ -21,7 +21,7 @@ public class GymPlayer {
     private long lastUpdated;
     private List<GymObj.Gym> gymList = GymObj.gyms;
     private List<GymBadge> badges = new ArrayList<>();
-    public boolean isQueuedFor(GymPlayer player, GymObj.Gym gym) {
+    public boolean isQueuedFor(GymPlayerWrapper player, GymObj.Gym gym) {
         return gym.gymQueue.containsKey(player.getUuid());
     }
     private String queuedFor;
@@ -29,7 +29,7 @@ public class GymPlayer {
 
     private boolean queued;
 
-    public GymPlayer(UUID uuid) {
+    public GymPlayerWrapper(UUID uuid) {
         this.uuid = uuid;
         this.player = ServerUtils.getInstance().getPlayerList().getPlayerByUUID(uuid);
         this.lastUpdated = System.currentTimeMillis();
@@ -48,7 +48,7 @@ public class GymPlayer {
     public void setQueued(boolean queued) {
         this.queued = queued;
     }
-    public void setQueuedFor(GymPlayer player, GymObj.Gym gym, boolean add) {
+    public void setQueuedFor(GymPlayerWrapper player, GymObj.Gym gym, boolean add) {
         if (add) {
             if (!gym.gymQueue.containsKey(player.getUuid()))
                 gym.gymQueue.put(player.getUuid(), player);
@@ -131,6 +131,5 @@ public class GymPlayer {
             badges.add(gymBadge);
             badgeList().add(gym.key);
         }
-        player.getCapability(BadgeCapability.I_GYM_BADGES_CAPABILITY, null).setBadges(badgeList());
     }
 }
