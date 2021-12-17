@@ -1,5 +1,8 @@
 package gg.oddysian.adenydd.noponicgyms.commands;
 
+import com.pixelmonmod.pixelmon.Pixelmon;
+import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
+import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
 import gg.oddysian.adenydd.noponicgyms.NoponicGyms;
 import gg.oddysian.adenydd.noponicgyms.methods.GymMethods;
 import gg.oddysian.adenydd.noponicgyms.storage.config.Config;
@@ -169,30 +172,58 @@ public class Command extends CommandBase {
 
             if (arguments.length == 3) {
                 if (arguments[0].equalsIgnoreCase("givebadge")) {
-                    GymPlayer gymPlayerWrapper = GymPlayerWrapper.gymPlayerHashMap.get(ServerUtils.getPlayer(arguments[1]).getUniqueID());
+                    EntityPlayerMP playerMP = ServerUtils.getPlayer(arguments[1]);
+
+                    if (playerMP == null) {
+                        ServerUtils.send(sender, "&c%Player% doesn't exist!".replaceAll("%Player%", arguments[1]));
+                        return;
+                    }
+
+                    GymPlayer gymPlayerWrapper = GymPlayerWrapper.gymPlayerHashMap.get(playerMP.getUniqueID());
+
+                    GymObj.Gym gym;
 
                     if (gymPlayerWrapper == null) {
                         ServerUtils.send(sender, "&cIt seems there was an issue loading your Gym Player Data");
                         return;
                     }
 
-                    GymBadge gymBadge = gymPlayerWrapper.returnSpecificBadge(arguments[2]);
-                    if (gymBadge == null) {
-                        ServerUtils.send(sender, "&4That's not a valid Gym Badge!");
+                    GymBadge gymBadge = new GymBadge();
+
+                    if (!GymObj.isGym(arguments[2])) {
+                        ServerUtils.send(sender, "&4That's not a valid Gym to give a Badge for!");
                         return;
+                    }
+
+                    gym = GymObj.getGym(arguments[2]);
+
+                    if (gymPlayerWrapper.hasSpecificBadge(arguments[2]))
+                    {
+                        ServerUtils.send(sender, "&cYou can't give a badge twice!");
                     }
 
                     long date = System.currentTimeMillis();
                     String convertedDate = DateFormat.getDateTimeInstance().format(date);
                     gymBadge.setDate(convertedDate);
+                    gymBadge.setItemstring(gym.badgeitemstring);
+                    gymBadge.setBadgedisplay(gym.display);
                     EntityPlayerMP leader = ServerUtils.getPlayer(sender.getName());
-
+                    PlayerPartyStorage pps = Pixelmon.storageManager.getParty(playerMP.getUniqueID());
+                    for (Pokemon pokemon:pps.getAll()) {
+                        if (pokemon == null)
+                            continue;
+                        if (pokemon.isEgg())
+                            continue;
+                        gymBadge.addPokemon(pokemon.getSpecies().name);
+                    }
 
                     if (leader == null) {
                         ServerUtils.send(sender, "&cThe leader returned empty!");
                         return;
                     }
                     gymBadge.setLeader(leader.getName());
+                    gymBadge.setBadgeName(gym.key);
+                    gymBadge.setGym(gym.key);
                     gymBadge.setObtained(true);
                     GymMethods.giveGymBadge(gymPlayerWrapper, gymBadge);
 
@@ -205,12 +236,6 @@ public class Command extends CommandBase {
                         ServerUtils.send(sender, "&4That's not a valid Gym Badge!");
                         return;
                     }
-
-                    gymBadge.setDate("");
-                    gymBadge.setLeader("");
-                    gymBadge.setObtained(false);
-                    List<String> clearedList = new ArrayList<>();
-                    gymBadge.setPokemon(clearedList);
                     GymMethods.takeGymBadge(gymPlayerWrapper, gymBadge);
                 }
             }
@@ -272,7 +297,7 @@ public class Command extends CommandBase {
                 if (gymPlayer == null) {
                     possibleArgs.add("player does not exist");
                 } else
-                    gymPlayer.getBadges().forEach((badge -> {possibleArgs.add(badge.getBadgeName());}));
+                    possibleArgs.addAll(GymObj.gymList());
             }
             if (args[0].equalsIgnoreCase("takebadge") && sender instanceof EntityPlayerMP && PermissionUtils.hasPermission(PermissionManager.LEADER_TAKE, (EntityPlayerMP) sender))
             {
@@ -280,7 +305,7 @@ public class Command extends CommandBase {
                 if (gymPlayer == null) {
                     possibleArgs.add("player does not exist");
                 } else
-                    gymPlayer.getBadges().forEach((badge -> {possibleArgs.add(badge.getBadgeName());}));
+                    gymPlayer.getBadges().forEach((badge -> {possibleArgs.add(badge.getGym());}));
             }
         }
         return getListOfStringsMatchingLastWord(args, possibleArgs);

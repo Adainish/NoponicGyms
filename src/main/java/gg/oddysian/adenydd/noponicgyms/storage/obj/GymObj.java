@@ -80,7 +80,7 @@ public class GymObj {
 
     public static class Gym {
         public List<String> gymLeaderList = new ArrayList<>();
-        public HashMap<UUID, GymPlayerWrapper> gymQueue = new HashMap<>();
+        public HashMap<UUID, GymPlayer> gymQueue = new HashMap<>();
         public ItemStack gymBadge;
         public String key;
         public String permission = "DEFAULT IMAGE";

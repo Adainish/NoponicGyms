@@ -48,7 +48,7 @@ public class GymPlayerWrapper {
     public void setQueued(boolean queued) {
         this.queued = queued;
     }
-    public void setQueuedFor(GymPlayerWrapper player, GymObj.Gym gym, boolean add) {
+    public void setQueuedFor(GymPlayer player, GymObj.Gym gym, boolean add) {
         if (add) {
             if (!gym.gymQueue.containsKey(player.getUuid()))
                 gym.gymQueue.put(player.getUuid(), player);

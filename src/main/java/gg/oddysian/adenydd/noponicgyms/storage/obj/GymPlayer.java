@@ -40,6 +40,14 @@ public class GymPlayer {
         return false;
     }
 
+    public boolean hasSpecificBadge(GymBadge parsedBadge) {
+        for (GymBadge badge:badges) {
+            if (badge.equals(parsedBadge))
+                return true;
+        }
+        return false;
+    }
+
     public GymBadge returnSpecificBadge(String gymName) {
         for (GymBadge badge:badges) {
             if (badge.getBadgeName().equalsIgnoreCase(gymName))
