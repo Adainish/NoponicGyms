@@ -5,6 +5,7 @@ import ca.landonjw.gooeylibs.inventory.api.Page;
 import ca.landonjw.gooeylibs.inventory.api.Template;
 import com.pixelmonmod.pixelmon.config.PixelmonItemsTMs;
 import com.pixelmonmod.pixelmon.enums.technicalmoves.ITechnicalMove;
+import gg.oddysian.adenydd.noponicgyms.NoponicGyms;
 import gg.oddysian.adenydd.noponicgyms.storage.obj.GymBadge;
 import gg.oddysian.adenydd.noponicgyms.storage.obj.GymObj;
 import gg.oddysian.adenydd.noponicgyms.storage.obj.GymPlayer;
@@ -119,22 +120,34 @@ public class UI {
 
         if (!isSpying) {
             for (GymBadge b : player.getBadges()) {
-                if (!player.hasSpecificBadge(b.getBadgeName()))
-                    continue;
                 String[] elements = b.getItemstring().split(" ");
-                String display = b.getBadgedisplay();
+                String display = "";
+
+                if (b.getBadgedisplay() == null || b.getBadgedisplay().isEmpty()) {
+                    display = "BADGE DISPLAY ERROR";
+                } else display = b.getBadgedisplay();
+
+
                 List<String> lore = new ArrayList<>();
                 ItemStack stack = setDefaultIcon(elements, b.getObtained());
-                if (b.getObtained()) {
-                 display = b.getBadgedisplay();
-                 lore = Arrays.asList("&eYou've defeated the %gym%".replaceAll("%gym%", b.getBadgeName()));
+
+                if (stack == null) {
+                    NoponicGyms.log.error("The ItemStack for the Badge %badge% could not generate in the GUI, Skipping display!".replaceAll("%badge%", b.getBadgeName()));
+                    continue;
                 }
+
+                if (b.getObtained()) {
+                 lore.add("&eYou've defeated the &b%gym% Gym &eon &b%date%".replaceAll("%gym%", b.getBadgeName()).replaceAll("%date%", b.getDate()));
+                 lore.add("&cPokemon used:");
+                    lore.addAll(b.getPokemon());
+                }
+
                 Button button = Button.builder().item(stack).lore(getFormattedList(lore)).displayName(getFormattedDisplayName(display)).build();
                 buttonList.add(button);
             }
         } else {
             for (GymBadge b : player.getBadges()) {
-                if (!player.hasSpecificBadge(b.getBadgeName()))
+                if (!player.hasSpecificBadge(b))
                     continue;
                 String[] elements = b.getItemstring().split(" ");
                 String display = b.getBadgedisplay();

@@ -24,6 +24,10 @@ public class GymBadge implements IGymBadge {
         this.pokemon = pokemonNames;
     }
 
+    public List<String> getPokemon() {
+        return this.pokemon;
+    }
+
     @Override
     public String getDate() {
         return date;
