@@ -2,6 +2,7 @@ package gg.oddysian.adenydd.noponicgyms.methods;
 
 import gg.oddysian.adenydd.noponicgyms.NoponicGyms;
 import gg.oddysian.adenydd.noponicgyms.storage.StoreMethods;
+import gg.oddysian.adenydd.noponicgyms.storage.config.Config;
 import gg.oddysian.adenydd.noponicgyms.storage.obj.GymBadge;
 import gg.oddysian.adenydd.noponicgyms.storage.obj.GymObj;
 import gg.oddysian.adenydd.noponicgyms.storage.obj.GymPlayer;
@@ -34,7 +35,7 @@ public class GymMethods {
         }
 
         ServerUtils.send(playerMP, "&eCongrats on beating the %gym%&e and obtaining the %badge%".replaceAll("%gym%", gymBadge.getGym()).replaceAll("%badge%", gymBadge.getBadgeName()));
-        ServerUtils.doBroadcast("&c%player% has defeated the %gym% and obtained the %badge% badge".replaceAll("%player%", gymPlayer.getName()).replaceAll("%gym%", gymBadge.getGym()).replaceAll("%badge%", gymBadge.getBadgeName()));
+        ServerUtils.doBroadcast(Config.getConfig().get().getNode("ServerPrefix").getString() + " " + "&c%player% has defeated the %gym% and obtained the %badge% badge".replaceAll("%player%", gymPlayer.getName()).replaceAll("%gym%", gymBadge.getGym()).replaceAll("%badge%", gymBadge.getBadgeName()));
         StoreMethods.writeGymBadge(playerMP, gymBadge);
     }
 
