@@ -177,6 +177,7 @@ public class Command extends CommandBase {
                     }
 
                     GymBadge gymBadge = gymPlayerWrapper.returnSpecificBadge(arguments[2]);
+
                     if (gymBadge == null) {
                         ServerUtils.send(sender, "&4That's not a valid Gym Badge!");
                         return;

@@ -42,10 +42,18 @@ public class GymPlayer {
 
     public GymBadge returnSpecificBadge(String gymName) {
         for (GymBadge badge:badges) {
-            if (badge.getBadgeName().equalsIgnoreCase(gymName))
+            if (badge.getGym().equalsIgnoreCase(gymName))
                 return badge;
         }
         return null;
+    }
+
+    public boolean isBadge(String gymName) {
+        for (GymBadge badge:badges) {
+            if (badge.getGym().equalsIgnoreCase(gymName))
+                return true;
+        }
+        return false;
     }
 
     public void setBadges(List<GymBadge> badges) {
