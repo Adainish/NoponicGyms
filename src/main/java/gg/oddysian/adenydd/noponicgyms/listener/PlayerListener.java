@@ -2,7 +2,6 @@ package gg.oddysian.adenydd.noponicgyms.listener;
 
 import gg.oddysian.adenydd.noponicgyms.methods.GymMethods;
 import gg.oddysian.adenydd.noponicgyms.storage.StoreMethods;
-import gg.oddysian.adenydd.noponicgyms.storage.capability.interfaces.IGymBadge;
 import gg.oddysian.adenydd.noponicgyms.storage.obj.GymObj;
 import gg.oddysian.adenydd.noponicgyms.storage.obj.GymPlayer;
 import gg.oddysian.adenydd.noponicgyms.util.PermissionUtils;

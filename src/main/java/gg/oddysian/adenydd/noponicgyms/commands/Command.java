@@ -155,10 +155,11 @@ public class Command extends CommandBase {
                         ServerUtils.send(sender, "&cIt seems there was an issue loading the Gym");
                         return;
                     }
-//                    if (gymPlayerWrapper.isQueuedFor(gymPlayerWrapper, challengingGym)) {
-//                        ServerUtils.send(sender, "&eYou're already in the queue for this Gym!");
-//                        return;
-//                    }
+                    if (challengingGym.gymQueue.containsKey(gymPlayerWrapper.getUuid())) {
+                        ServerUtils.send(sender, "&eYou're already in the queue for this Gym!");
+                        return;
+                    }
+
 //                    if (gymPlayerWrapper.isQueued()) {
 //                        ServerUtils.send(sender, "&eYou're already in the queue for another Gym!");
 //                        return;

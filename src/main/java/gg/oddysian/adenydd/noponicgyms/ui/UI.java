@@ -1,8 +1,10 @@
 package gg.oddysian.adenydd.noponicgyms.ui;
 
 import ca.landonjw.gooeylibs.inventory.api.Button;
+import ca.landonjw.gooeylibs.inventory.api.InventoryAPI;
 import ca.landonjw.gooeylibs.inventory.api.Page;
 import ca.landonjw.gooeylibs.inventory.api.Template;
+import com.cable.library.tasks.Task;
 import com.pixelmonmod.pixelmon.config.PixelmonItemsTMs;
 import com.pixelmonmod.pixelmon.enums.technicalmoves.ITechnicalMove;
 import gg.oddysian.adenydd.noponicgyms.NoponicGyms;
@@ -10,6 +12,7 @@ import gg.oddysian.adenydd.noponicgyms.storage.obj.GymBadge;
 import gg.oddysian.adenydd.noponicgyms.storage.obj.GymObj;
 import gg.oddysian.adenydd.noponicgyms.storage.obj.GymPlayer;
 import gg.oddysian.adenydd.noponicgyms.storage.obj.ModeObj;
+import gg.oddysian.adenydd.noponicgyms.tasks.TeleportTask;
 import gg.oddysian.adenydd.noponicgyms.util.ServerUtils;
 import gg.oddysian.adenydd.noponicgyms.wrapper.GymPlayerWrapper;
 import net.minecraft.enchantment.Enchantment;
@@ -109,7 +112,15 @@ public class UI {
             for (String s:gym.lore) {
                 lore.add(s.replaceAll("%gym%", gym.display).replaceAll("%availableleaders%", String.valueOf(gym.gymLeaderList)).replaceAll("%gymlevel%", String.valueOf(gym.levelcap)));
             }
-            Button button = Button.builder().item(gym.gymBadge).lore(getFormattedList(lore)).displayName(getFormattedDisplayName(gym.display)).build();
+            Button button = Button.builder()
+                    .item(gym.gymBadge)
+                    .lore(getFormattedList(lore))
+                    .onClick(buttonAction -> {
+                        InventoryAPI.getInstance().closePlayerInventory(buttonAction.getPlayer());
+                        Task.builder().iterations(1).execute(new TeleportTask(buttonAction.getPlayer(), gym.worldID, gym.posX, gym.posY, gym.posZ)).build();
+                    })
+                    .displayName(getFormattedDisplayName(gym.display))
+                    .build();
             buttonList.add(button);
         }
         return buttonList;
