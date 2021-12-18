@@ -1,4 +1,4 @@
-package gg.oddysian.adenydd.noponicgyms.storage.obj;
+package gg.oddysian.adenydd.noponicgyms.storage.registry;
 
 import gg.oddysian.adenydd.noponicgyms.NoponicGyms;
 import gg.oddysian.adenydd.noponicgyms.storage.config.GymConfig;
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class ModeObj {
+public class ModeRegistry {
     public static List<Mode> gymModes = new ArrayList<>();
 
     public static void loadGymModes() {

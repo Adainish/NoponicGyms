@@ -1,11 +1,8 @@
 package gg.oddysian.adenydd.noponicgyms.storage.config;
 
-import gg.oddysian.adenydd.noponicgyms.storage.obj.EnumTier;
 import lombok.SneakyThrows;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class GymConfig extends Configurable {
     private static GymConfig config;
@@ -111,7 +108,7 @@ public class GymConfig extends Configurable {
     }
 
     public String getConfigName() {
-        return "Gyms.conf";
+        return "GymsRegistry.conf";
     }
 
     public GymConfig() {}

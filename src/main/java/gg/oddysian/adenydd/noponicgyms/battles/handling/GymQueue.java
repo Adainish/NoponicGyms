@@ -10,5 +10,5 @@ import java.util.UUID;
 @Getter
 @Setter
 public class GymQueue {
-    public HashMap<UUID, GymPlayer> gymQue = new HashMap<>();
+    public static HashMap<UUID, GymPlayer> gymQue = new HashMap<>();
 }

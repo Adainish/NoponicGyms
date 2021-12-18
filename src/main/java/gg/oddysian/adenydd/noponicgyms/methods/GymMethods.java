@@ -4,7 +4,7 @@ import gg.oddysian.adenydd.noponicgyms.NoponicGyms;
 import gg.oddysian.adenydd.noponicgyms.storage.StoreMethods;
 import gg.oddysian.adenydd.noponicgyms.storage.config.Config;
 import gg.oddysian.adenydd.noponicgyms.storage.obj.GymBadge;
-import gg.oddysian.adenydd.noponicgyms.storage.obj.GymObj;
+import gg.oddysian.adenydd.noponicgyms.storage.registry.GymsRegistry;
 import gg.oddysian.adenydd.noponicgyms.storage.obj.GymPlayer;
 import gg.oddysian.adenydd.noponicgyms.util.ServerUtils;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -30,7 +30,7 @@ public class GymMethods {
         }
 
         if (gymBadge.getBadgeName() == null || gymBadge.getBadgeName().isEmpty()) {
-            NoponicGyms.log.error("A badge was attempted to be handy out, but the badge name didn't exist while doing so! Ending function");
+            NoponicGyms.log.error("A badge was attempted to be handed out, but the badge name didn't exist while doing so! Ending function");
             return;
         }
 
@@ -50,7 +50,7 @@ public class GymMethods {
     }
 
 
-    public static void updateGym(GymObj.Gym gym, boolean open) {
+    public static void updateGym(GymsRegistry.Gym gym, boolean open) {
         if (gym == null)
             return;
 
@@ -65,7 +65,7 @@ public class GymMethods {
 
     }
 
-    public static void closeGym(GymObj.Gym gym) {
+    public static void closeGym(GymsRegistry.Gym gym) {
 
         if (!gym.opened)
             return;
@@ -75,7 +75,7 @@ public class GymMethods {
 
     }
 
-    public static void openGym(GymObj.Gym gym) {
+    public static void openGym(GymsRegistry.Gym gym) {
 
         if (gym.opened)
             return;

@@ -1,9 +1,11 @@
 package gg.oddysian.adenydd.noponicgyms.listener;
 
+import com.cable.library.tasks.Task;
 import gg.oddysian.adenydd.noponicgyms.methods.GymMethods;
 import gg.oddysian.adenydd.noponicgyms.storage.StoreMethods;
-import gg.oddysian.adenydd.noponicgyms.storage.obj.GymObj;
+import gg.oddysian.adenydd.noponicgyms.storage.registry.GymsRegistry;
 import gg.oddysian.adenydd.noponicgyms.storage.obj.GymPlayer;
+import gg.oddysian.adenydd.noponicgyms.tasks.CleanRentalsTask;
 import gg.oddysian.adenydd.noponicgyms.util.PermissionUtils;
 import gg.oddysian.adenydd.noponicgyms.util.ServerUtils;
 import gg.oddysian.adenydd.noponicgyms.wrapper.GymPlayerWrapper;
@@ -31,25 +33,24 @@ public class PlayerListener {
 
         EntityPlayerMP playerMP;
 
-        for (GymObj.Gym gym:GymObj.gyms) {
+        for (GymsRegistry.Gym gym: GymsRegistry.gyms) {
             if (ServerUtils.isPlayerOnline(event.player.getUniqueID())) {
                 playerMP = ServerUtils.getPlayer(event.player.getName());
-
-                if (!gym.gymLeaderList.contains(playerMP.getName()))
-                gym.gymLeaderList.add(playerMP.getName());
-
                 if (PermissionUtils.hasPermission(gym.permission, playerMP)) {
+                    if (!gym.gymLeaderList.contains(playerMP.getName()))
+                        gym.gymLeaderList.add(playerMP.getName());
                     GymMethods.updateGym(gym, true);
                 }
             }
         }
+        Task.builder().execute(new CleanRentalsTask(event.player.getUniqueID())).delay(5).iterations(1).build();
     }
 
     @SubscribeEvent
     public void onPlayerLogOut(PlayerEvent.PlayerLoggedOutEvent event) {
         EntityPlayerMP playerMP;
 
-        for (GymObj.Gym gym:GymObj.gyms) {
+        for (GymsRegistry.Gym gym: GymsRegistry.gyms) {
 
             playerMP = ServerUtils.getPlayer(event.player.getName());
 

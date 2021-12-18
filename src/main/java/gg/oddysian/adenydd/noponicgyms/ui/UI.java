@@ -9,12 +9,11 @@ import com.pixelmonmod.pixelmon.config.PixelmonItemsTMs;
 import com.pixelmonmod.pixelmon.enums.technicalmoves.ITechnicalMove;
 import gg.oddysian.adenydd.noponicgyms.NoponicGyms;
 import gg.oddysian.adenydd.noponicgyms.storage.obj.GymBadge;
-import gg.oddysian.adenydd.noponicgyms.storage.obj.GymObj;
+import gg.oddysian.adenydd.noponicgyms.storage.registry.GymsRegistry;
 import gg.oddysian.adenydd.noponicgyms.storage.obj.GymPlayer;
-import gg.oddysian.adenydd.noponicgyms.storage.obj.ModeObj;
+import gg.oddysian.adenydd.noponicgyms.storage.registry.ModeRegistry;
 import gg.oddysian.adenydd.noponicgyms.tasks.TeleportTask;
 import gg.oddysian.adenydd.noponicgyms.util.ServerUtils;
-import gg.oddysian.adenydd.noponicgyms.wrapper.GymPlayerWrapper;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -103,10 +102,10 @@ public class UI {
         return formattedInfo;
     }
 
-    public static List<Button> gyms(List<GymObj.Gym> gyms) {
+    public static List<Button> gyms(List<GymsRegistry.Gym> gyms) {
         List<Button> buttonList = new ArrayList<>();
 
-        for (GymObj.Gym gym: gyms) {
+        for (GymsRegistry.Gym gym: gyms) {
             List<String> lore = new ArrayList<>();
 
             for (String s:gym.lore) {
@@ -179,14 +178,14 @@ public class UI {
     public static Page gyms() {
         Template.Builder template = Template.builder(5);
         template.fill(filler());
-        return Page.builder().template(template.build()).title("Gyms").dynamicContentArea(1, 1, 3, 7).dynamicContents(gyms(GymObj.gyms)).build();
+        return Page.builder().template(template.build()).title("Gyms").dynamicContentArea(1, 1, 3, 7).dynamicContents(gyms(GymsRegistry.gyms)).build();
     }
 
     public static Page tiers(GymPlayer gymPlayerWrapper) {
         Template.Builder template = Template.builder(5);
 
         int i = 0;
-        for (String s : ModeObj.modeList()) {
+        for (String s : ModeRegistry.modeList()) {
             i++;
             Button button = Button.builder()
                     .displayName(s)
@@ -199,7 +198,7 @@ public class UI {
         }
 
         template.fill(filler());
-        return Page.builder().template(template.build()).title("Gyms").build();
+        return Page.builder().template(template.build()).title("GymsRegistry").build();
     }
 
     public static Page gymBadges(GymPlayer gymPlayer, boolean isSpying) {

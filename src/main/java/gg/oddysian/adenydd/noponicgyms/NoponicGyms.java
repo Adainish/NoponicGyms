@@ -4,8 +4,8 @@ import gg.oddysian.adenydd.noponicgyms.commands.Command;
 import gg.oddysian.adenydd.noponicgyms.storage.config.Config;
 import gg.oddysian.adenydd.noponicgyms.storage.config.GymConfig;
 import gg.oddysian.adenydd.noponicgyms.listener.PlayerListener;
-import gg.oddysian.adenydd.noponicgyms.storage.obj.GymObj;
-import gg.oddysian.adenydd.noponicgyms.storage.obj.ModeObj;
+import gg.oddysian.adenydd.noponicgyms.storage.registry.GymsRegistry;
+import gg.oddysian.adenydd.noponicgyms.storage.registry.ModeRegistry;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
@@ -67,8 +67,8 @@ public class NoponicGyms {
     }
 
     public void initOBJ() {
-        GymObj.loadGyms();
-        ModeObj.loadGymModes();
+        GymsRegistry.loadGyms();
+        ModeRegistry.loadGymModes();
     }
 
     public void loadConfig() {

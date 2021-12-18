@@ -1,4 +1,4 @@
-package gg.oddysian.adenydd.noponicgyms.storage.obj;
+package gg.oddysian.adenydd.noponicgyms.storage.registry;
 
 import com.google.common.reflect.TypeToken;
 import com.pixelmonmod.pixelmon.Pixelmon;
@@ -11,6 +11,7 @@ import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import com.pixelmonmod.pixelmon.enums.technicalmoves.ITechnicalMove;
 import gg.oddysian.adenydd.noponicgyms.NoponicGyms;
 import gg.oddysian.adenydd.noponicgyms.storage.config.GymConfig;
+import gg.oddysian.adenydd.noponicgyms.storage.obj.GymPlayer;
 import gg.oddysian.adenydd.noponicgyms.wrapper.GymPlayerWrapper;
 import info.pixelmon.repack.ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import info.pixelmon.repack.ninja.leaping.configurate.objectmapping.ObjectMappingException;
@@ -20,7 +21,7 @@ import net.minecraft.item.ItemStack;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class GymObj {
+public class GymsRegistry {
     public static List<Gym> gyms = new ArrayList<>();
 
     public static void loadGyms() {
@@ -36,7 +37,6 @@ public class GymObj {
                 if (node == null) {
                     NoponicGyms.log.info(node + "GYM NODE NULL");
                 } else {
-                    NoponicGyms.log.info(node + "NEW GYM ADDED");
                     gyms.add(new Gym(node));
                 }
             }
@@ -147,16 +147,19 @@ public class GymObj {
             }
             String[] elements = badgeitemstring.split(" ");
             this.gymBadge = setDefaultIcon(elements);
-            this.gymPokemon = setGymPokemon(key, GymConfig.getConfig().get().getNode("Gyms", key, "GymPokemon"));
         }
 
         
-        private List<Pokemon> setGymPokemon(String gymKey, CommentedConfigurationNode node) {
+        public List<Pokemon> setGymPokemon(String gymKey) {
             List<Pokemon> gymPokemon = new ArrayList<>();
+            CommentedConfigurationNode node = GymConfig.getConfig().get().getNode("Gyms", gymKey, "GymPokemon");
             Map nodemap = node.getChildrenMap();
             for (Object obj: nodemap.keySet()) {
-                if (obj == null)
+                if (obj == null) {
+                    NoponicGyms.log.error(gymKey);
+                    NoponicGyms.log.error("OBJ Null while generating gym Pokemon");
                     continue;
+                }
                 String nodestring = obj.toString();
                 if (generateGymPokemon(gymKey, nodestring) == null) {
                     NoponicGyms.log.error("There was an error generating the Pokemon for " + gymKey + " " + nodestring);
@@ -169,7 +172,7 @@ public class GymObj {
             return gymPokemon;
         }
 
-        private Pokemon generateGymPokemon(String gymKey, String node) {
+        public Pokemon generateGymPokemon(String gymKey, String node) {
 
             String pokemonname = GymConfig.getConfig().get().getNode("Gyms", gymKey, "GymPokemon", node, "PokemonName").getString();
             int form = GymConfig.getConfig().get().getNode("Gyms", gymKey, "GymPokemon", node, "Form").getInt();
