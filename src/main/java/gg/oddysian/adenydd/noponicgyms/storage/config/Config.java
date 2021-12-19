@@ -22,7 +22,7 @@ public class Config extends Configurable {
 
     @SneakyThrows
     public void populate() {
-        this.get().getNode(new Object[]{"ServerPrefix"}).setValue("&b&lPoppi").setComment("Plugin prefix for messages");
+        this.get().getNode("ServerPrefix").setValue("&b&lPoppi").setComment("Plugin prefix for messages");
     }
 
     public String getConfigName() {

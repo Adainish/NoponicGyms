@@ -3,6 +3,8 @@ package gg.oddysian.adenydd.noponicgyms.storage.registry;
 import com.google.common.reflect.TypeToken;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
+import com.pixelmonmod.pixelmon.battles.attacks.Attack;
+import com.pixelmonmod.pixelmon.battles.attacks.AttackBase;
 import com.pixelmonmod.pixelmon.config.PixelmonItemsTMs;
 import com.pixelmonmod.pixelmon.entities.pixelmon.abilities.AbilityBase;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.StatsType;
@@ -12,7 +14,6 @@ import com.pixelmonmod.pixelmon.enums.technicalmoves.ITechnicalMove;
 import gg.oddysian.adenydd.noponicgyms.NoponicGyms;
 import gg.oddysian.adenydd.noponicgyms.storage.config.GymConfig;
 import gg.oddysian.adenydd.noponicgyms.storage.obj.GymPlayer;
-import gg.oddysian.adenydd.noponicgyms.wrapper.GymPlayerWrapper;
 import info.pixelmon.repack.ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import info.pixelmon.repack.ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import net.minecraft.item.Item;
@@ -23,6 +24,10 @@ import java.util.stream.Collectors;
 
 public class GymsRegistry {
     public static List<Gym> gyms = new ArrayList<>();
+
+    public static List <Gym> getGyms() {
+        return gyms;
+    }
 
     public static void loadGyms() {
         gyms.clear();
@@ -41,11 +46,11 @@ public class GymsRegistry {
                 }
             }
         }
-
+        gyms.sort(Comparator.comparing(Gym::getWeight)); //Sort the gyms in ascending order
     }
 
     public static List<String> gymList() {
-        return gyms.stream().map(gym -> gym.key).collect(Collectors.toList());
+        return gyms.stream().map(Gym::getKey).collect(Collectors.toList());
     }
 
     public static boolean isGym(String name) {
@@ -58,7 +63,7 @@ public class GymsRegistry {
             }
 
             gym = (Gym) var1.next();
-        } while (!gym.key.equalsIgnoreCase(name));
+        } while (!gym.getKey().equalsIgnoreCase(name));
 
         return true;
     }
@@ -73,80 +78,82 @@ public class GymsRegistry {
             }
 
             gym = (Gym) var1.next();
-        } while (!gym.key.equalsIgnoreCase(key));
+        } while (!gym.getKey().equalsIgnoreCase(key));
 
         return gym;
     }
 
     public static class Gym {
-        public List<String> gymLeaderList = new ArrayList<>();
-        public HashMap<UUID, GymPlayer> gymQueue = new HashMap<>();
-        public ItemStack gymBadge;
-        public String key;
-        public String permission = "DEFAULT IMAGE";
-        public String tier = "";
-        public String leadermessage = "";
-        public String badgeitemstring = "minecraft:paper";
-        public boolean opened = false;
-        public int levelcap = 10;
-        public int worldID = 0;
-        public double posX = 0.0;
-        public double posY = 0.0;
-        public double posZ = 0.0;
+        private List<String> gymLeaderList;
+        private HashMap<UUID, GymPlayer> gymQueue;
+        private ItemStack gymBadge;
+        private String key;
+        private String permission;
+        private String tier;
+        private String leadermessage;
+        private String badgeitemstring;
+        private boolean opened = false;
+        private int weight = 0;
+        private int levelcap = 10;
+        private int worldID = 0;
+        private double posX = 0.0;
+        private double posY = 0.0;
+        private double posZ = 0.0;
 
-        public int leaderWorldID = 0;
-        public double leaderPosX= 0.0;
-        public double leaderPosY = 0.0;
-        public double leaderPosZ = 0.0;
+        private int leaderWorldID = 0;
+        private double leaderPosX= 0.0;
+        private double leaderPosY = 0.0;
+        private double leaderPosZ = 0.0;
 
-        public int challengerWorldID = 0;
-        public double challengerPosX = 0.0;
-        public double challengerPosY = 0.0;
-        public double challengerPosZ = 0.0;
+        private int challengerWorldID = 0;
+        private double challengerPosX = 0.0;
+        private double challengerPosY = 0.0;
+        private double challengerPosZ = 0.0;
 
-        public String display = "";
-        public List<String> lore = new ArrayList<>();
-        public List<Pokemon> gymPokemon = new ArrayList<>();
+        private String display = "";
+        private List<String> lore = new ArrayList<>();
+        private List<Pokemon> gymPokemon = new ArrayList<>();
         
-        public boolean gymFee = true;
-        public boolean payLeader = true;
-        public double feeCost = 100.00;
+        private boolean gymFee = true;
+        private boolean payLeader = true;
+        private double feeCost = 100.00;
 
         public Gym(String key) {
-            this.opened = false;
-            this.gymFee = GymConfig.getConfig().get().getNode("Gyms", key, "Fee", "EnableFee").getBoolean();
-            this.payLeader = GymConfig.getConfig().get().getNode("Gyms", key, "Fee", "PayLeader").getBoolean();
-            this.feeCost = GymConfig.getConfig().get().getNode("Gyms", key, "Fee", "Fee").getDouble();
-            this.worldID = GymConfig.getConfig().get().getNode("Gyms", key, "Warp", "Entry", "WorldID").getInt();
-            this.posX = GymConfig.getConfig().get().getNode("Gyms", key, "Warp", "Entry", "X").getDouble();
-            this.posY = GymConfig.getConfig().get().getNode("Gyms", key, "Warp", "Entry", "Y").getDouble();
-            this.posZ = GymConfig.getConfig().get().getNode("Gyms", key, "Warp", "Entry", "Z").getDouble();
+            this.setOpened(false);
+            this.setGymFee(GymConfig.getConfig().get().getNode("Gyms", key, "Fee", "EnableFee").getBoolean());
+            this.setPayLeader(GymConfig.getConfig().get().getNode("Gyms", key, "Fee", "PayLeader").getBoolean());
+            this.setFeeCost(GymConfig.getConfig().get().getNode("Gyms", key, "Fee", "Fee").getDouble());
+            this.setWorldID(GymConfig.getConfig().get().getNode("Gyms", key, "Warp", "Entry", "WorldID").getInt());
+            this.setPosX(GymConfig.getConfig().get().getNode("Gyms", key, "Warp", "Entry", "X").getDouble());
+            this.setPosY(GymConfig.getConfig().get().getNode("Gyms", key, "Warp", "Entry", "Y").getDouble());
+            this.setPosZ(GymConfig.getConfig().get().getNode("Gyms", key, "Warp", "Entry", "Z").getDouble());
 
-            this.leaderWorldID = GymConfig.getConfig().get().getNode("Gyms", key, "Warp", "GymLeader", "WorldID").getInt();
-            this.leaderPosX = GymConfig.getConfig().get().getNode("Gyms", key, "Warp", "GymLeader", "X").getDouble();
-            this.leaderPosY = GymConfig.getConfig().get().getNode("Gyms", key, "Warp", "GymLeader", "Y").getDouble();
-            this.leaderPosZ = GymConfig.getConfig().get().getNode("Gyms", key, "Warp", "GymLeader", "Z").getDouble();
+            this.setLeaderWorldID(GymConfig.getConfig().get().getNode("Gyms", key, "Warp", "GymLeader", "WorldID").getInt());
+            this.setLeaderPosX(GymConfig.getConfig().get().getNode("Gyms", key, "Warp", "GymLeader", "X").getDouble());
+            this.setLeaderPosY(GymConfig.getConfig().get().getNode("Gyms", key, "Warp", "GymLeader", "Y").getDouble());
+            this.setLeaderPosZ(GymConfig.getConfig().get().getNode("Gyms", key, "Warp", "GymLeader", "Z").getDouble());
 
-            this.challengerWorldID = GymConfig.getConfig().get().getNode("Gyms", key, "Warp", "Challenger", "WorldID").getInt();
-            this.challengerPosX = GymConfig.getConfig().get().getNode("Gyms", key, "Warp", "Challenger", "X").getDouble();
-            this.challengerPosY = GymConfig.getConfig().get().getNode("Gyms", key, "Warp", "Challenger", "Y").getDouble();
-            this.challengerPosZ = GymConfig.getConfig().get().getNode("Gyms", key, "Warp", "Challenger", "Z").getDouble();
+            this.setChallengerWorldID(GymConfig.getConfig().get().getNode("Gyms", key, "Warp", "Challenger", "WorldID").getInt());
+            this.setChallengerPosX(GymConfig.getConfig().get().getNode("Gyms", key, "Warp", "Challenger", "X").getDouble());
+            this.setChallengerPosY(GymConfig.getConfig().get().getNode("Gyms", key, "Warp", "Challenger", "Y").getDouble());
+            this.setChallengerPosZ(GymConfig.getConfig().get().getNode("Gyms", key, "Warp", "Challenger", "Z").getDouble());
 
 
-            this.badgeitemstring = GymConfig.getConfig().get().getNode("Gyms", key, "Badge").getString();
-            this.key = key;
-            this.display = GymConfig.getConfig().get().getNode("Gyms", key, "UI", "Display").getString();
-            this.permission = GymConfig.getConfig().get().getNode("Gyms", key, "Permission").getString();
-            this.tier = GymConfig.getConfig().get().getNode("Gyms", key, "Tier").getString();
-            this.leadermessage = GymConfig.getConfig().get().getNode("Gyms", key, "LeaderMessage").getString();
-            this.levelcap = GymConfig.getConfig().get().getNode("Gyms", key, "LevelCap").getInt();
+            this.setBadgeitemstring(GymConfig.getConfig().get().getNode("Gyms", key, "Badge").getString());
+            this.setKey(key);
+            this.setWeight(GymConfig.getConfig().get().getNode("Gyms", key, "UI", "Weight").getInt());
+            this.setDisplay(GymConfig.getConfig().get().getNode("Gyms", key, "UI", "Display").getString());
+            this.setPermission(GymConfig.getConfig().get().getNode("Gyms", key, "Permission").getString());
+            this.setTier(GymConfig.getConfig().get().getNode("Gyms", key, "Tier").getString());
+            this.setLeadermessage(GymConfig.getConfig().get().getNode("Gyms", key, "LeaderMessage").getString());
+            this.setLevelcap(GymConfig.getConfig().get().getNode("Gyms", key, "LevelCap").getInt());
             try {
-                this.lore = GymConfig.getConfig().get().getNode("Gyms", key, "UI", "Lore").getList(TypeToken.of(String.class));
+                this.setLore(GymConfig.getConfig().get().getNode("Gyms", key, "UI", "Lore").getList(TypeToken.of(String.class)));
             } catch (ObjectMappingException e) {
                 e.printStackTrace();
             }
-            String[] elements = badgeitemstring.split(" ");
-            this.gymBadge = setDefaultIcon(elements);
+            String[] elements = getBadgeitemstring().split(" ");
+            this.setGymBadge(setDefaultIcon(elements));
         }
 
         
@@ -184,6 +191,12 @@ public class GymsRegistry {
             String ability = GymConfig.getConfig().get().getNode("Gyms", gymKey, "GymPokemon", node, "Stats", "Ability").getString();
             int dynamaxLevel = GymConfig.getConfig().get().getNode("Gyms", gymKey, "GymPokemon", node, "Dynamax").getInt();
             String heldItem = GymConfig.getConfig().get().getNode("Gyms", gymKey, "GymPokemon", node, "HeldItem").getString();
+            List<String> moves = new ArrayList <>();
+            try {
+                moves = GymConfig.getConfig().get().getNode("Gyms", gymKey, "GymPokemon", node, "MoveSet").getList(TypeToken.of(String.class));
+            } catch (ObjectMappingException e) {
+                e.printStackTrace();
+            }
 
             //Evs
 
@@ -258,6 +271,15 @@ public class GymsRegistry {
                 pokemon.setNature(EnumNature.getRandomNature());
                 NoponicGyms.log.info("There was an issue generating the nature for %pokemon%, please check your config for any errors");
             }
+            pokemon.getMoveset().clear();
+            for (String s:moves) {
+                Attack atk = new Attack(s);
+                if (AttackBase.getAttackBase(s).isPresent()) {
+                    pokemon.getMoveset().add(atk);
+                } else {
+                    NoponicGyms.log.info("The %move% for %pokemon% doesn't exist! skipping move!");
+                }
+            }
             if (AbilityBase.getAbility(ability).isPresent())
             pokemon.setAbility(ability);
             else NoponicGyms.log.info("There was an issue generating the ability for %pokemon%, please check your config for any errors");
@@ -318,6 +340,238 @@ public class GymsRegistry {
             if (itemType == null)
                 NoponicGyms.log.info("There was an issue generating the gym badge item, please check your console for any errors");
             return itemType;
+        }
+
+        public List <String> getGymLeaderList() {
+            return gymLeaderList;
+        }
+
+        public void setGymLeaderList(List <String> gymLeaderList) {
+            this.gymLeaderList = gymLeaderList;
+        }
+
+        public HashMap <UUID, GymPlayer> getGymQueue() {
+            return gymQueue;
+        }
+
+        public void setGymQueue(HashMap <UUID, GymPlayer> gymQueue) {
+            this.gymQueue = gymQueue;
+        }
+
+        public ItemStack getGymBadge() {
+            return gymBadge;
+        }
+
+        public void setGymBadge(ItemStack gymBadge) {
+            this.gymBadge = gymBadge;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public void setKey(String key) {
+            this.key = key;
+        }
+
+        public String getPermission() {
+            return permission;
+        }
+
+        public void setPermission(String permission) {
+            this.permission = permission;
+        }
+
+        public String getTier() {
+            return tier;
+        }
+
+        public void setTier(String tier) {
+            this.tier = tier;
+        }
+
+        public String getLeadermessage() {
+            return leadermessage;
+        }
+
+        public void setLeadermessage(String leadermessage) {
+            this.leadermessage = leadermessage;
+        }
+
+        public String getBadgeitemstring() {
+            return badgeitemstring;
+        }
+
+        public void setBadgeitemstring(String badgeitemstring) {
+            this.badgeitemstring = badgeitemstring;
+        }
+
+        public boolean isOpened() {
+            return opened;
+        }
+
+        public void setOpened(boolean opened) {
+            this.opened = opened;
+        }
+
+        public int getWeight() {
+            return weight;
+        }
+
+        public void setWeight(int weight) {
+            this.weight = weight;
+        }
+
+        public int getLevelcap() {
+            return levelcap;
+        }
+
+        public void setLevelcap(int levelcap) {
+            this.levelcap = levelcap;
+        }
+
+        public int getWorldID() {
+            return worldID;
+        }
+
+        public void setWorldID(int worldID) {
+            this.worldID = worldID;
+        }
+
+        public double getPosX() {
+            return posX;
+        }
+
+        public void setPosX(double posX) {
+            this.posX = posX;
+        }
+
+        public double getPosY() {
+            return posY;
+        }
+
+        public void setPosY(double posY) {
+            this.posY = posY;
+        }
+
+        public double getPosZ() {
+            return posZ;
+        }
+
+        public void setPosZ(double posZ) {
+            this.posZ = posZ;
+        }
+
+        public int getLeaderWorldID() {
+            return leaderWorldID;
+        }
+
+        public void setLeaderWorldID(int leaderWorldID) {
+            this.leaderWorldID = leaderWorldID;
+        }
+
+        public double getLeaderPosX() {
+            return leaderPosX;
+        }
+
+        public void setLeaderPosX(double leaderPosX) {
+            this.leaderPosX = leaderPosX;
+        }
+
+        public double getLeaderPosY() {
+            return leaderPosY;
+        }
+
+        public void setLeaderPosY(double leaderPosY) {
+            this.leaderPosY = leaderPosY;
+        }
+
+        public double getLeaderPosZ() {
+            return leaderPosZ;
+        }
+
+        public void setLeaderPosZ(double leaderPosZ) {
+            this.leaderPosZ = leaderPosZ;
+        }
+
+        public int getChallengerWorldID() {
+            return challengerWorldID;
+        }
+
+        public void setChallengerWorldID(int challengerWorldID) {
+            this.challengerWorldID = challengerWorldID;
+        }
+
+        public double getChallengerPosX() {
+            return challengerPosX;
+        }
+
+        public void setChallengerPosX(double challengerPosX) {
+            this.challengerPosX = challengerPosX;
+        }
+
+        public double getChallengerPosY() {
+            return challengerPosY;
+        }
+
+        public void setChallengerPosY(double challengerPosY) {
+            this.challengerPosY = challengerPosY;
+        }
+
+        public double getChallengerPosZ() {
+            return challengerPosZ;
+        }
+
+        public void setChallengerPosZ(double challengerPosZ) {
+            this.challengerPosZ = challengerPosZ;
+        }
+
+        public String getDisplay() {
+            return display;
+        }
+
+        public void setDisplay(String display) {
+            this.display = display;
+        }
+
+        public List <String> getLore() {
+            return lore;
+        }
+
+        public void setLore(List <String> lore) {
+            this.lore = lore;
+        }
+
+        public List <Pokemon> getGymPokemon() {
+            return gymPokemon;
+        }
+
+        public void setGymPokemon(List <Pokemon> gymPokemon) {
+            this.gymPokemon = gymPokemon;
+        }
+
+        public boolean isGymFee() {
+            return gymFee;
+        }
+
+        public void setGymFee(boolean gymFee) {
+            this.gymFee = gymFee;
+        }
+
+        public boolean isPayLeader() {
+            return payLeader;
+        }
+
+        public void setPayLeader(boolean payLeader) {
+            this.payLeader = payLeader;
+        }
+
+        public double getFeeCost() {
+            return feeCost;
+        }
+
+        public void setFeeCost(double feeCost) {
+            this.feeCost = feeCost;
         }
     }
 }

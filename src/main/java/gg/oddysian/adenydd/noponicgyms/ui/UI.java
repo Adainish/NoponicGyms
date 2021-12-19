@@ -22,9 +22,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class UI {
 
@@ -108,19 +106,23 @@ public class UI {
         for (GymsRegistry.Gym gym: gyms) {
             List<String> lore = new ArrayList<>();
 
-            for (String s:gym.lore) {
-                lore.add(s.replaceAll("%gym%", gym.display).replaceAll("%availableleaders%", String.valueOf(gym.gymLeaderList)).replaceAll("%gymlevel%", String.valueOf(gym.levelcap)));
+            for (String s: gym.getLore()) {
+                String openStatus = "&aOpen";
+                if (!gym.isOpened())
+                    openStatus = "&4Closed";
+                lore.add(s.replaceAll("%gym%", gym.getDisplay()).replaceAll("%availableleaders%", String.valueOf(gym.getGymLeaderList())).replaceAll("%gymlevel%", String.valueOf(gym.getLevelcap())).replaceAll("%open%", openStatus));
             }
             Button button = Button.builder()
-                    .item(gym.gymBadge)
+                    .item(gym.getGymBadge())
                     .lore(getFormattedList(lore))
                     .onClick(buttonAction -> {
                         InventoryAPI.getInstance().closePlayerInventory(buttonAction.getPlayer());
-                        Task.builder().iterations(1).execute(new TeleportTask(buttonAction.getPlayer(), gym.worldID, gym.posX, gym.posY, gym.posZ)).build();
+                        Task.builder().iterations(1).execute(new TeleportTask(buttonAction.getPlayer(), gym.getWorldID(), gym.getPosX(), gym.getPosY(), gym.getPosZ())).build();
                     })
-                    .displayName(getFormattedDisplayName(gym.display))
+                    .displayName(getFormattedDisplayName(gym.getDisplay()))
                     .build();
             buttonList.add(button);
+
         }
         return buttonList;
     }

@@ -1,6 +1,5 @@
 package gg.oddysian.adenydd.noponicgyms.storage.obj;
 
-import gg.oddysian.adenydd.noponicgyms.battles.handling.Queue;
 import net.minecraftforge.common.UsernameCache;
 
 import java.util.ArrayList;

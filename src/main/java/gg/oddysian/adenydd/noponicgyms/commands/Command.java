@@ -160,20 +160,20 @@ public class Command extends CommandBase {
                         return;
                     }
 
-                    if (!PermissionUtils.canUse(targetGym.permission, sender)) {
-                        ServerUtils.send(sender, "&cYou're not allowed to retrieve gym teams for the %gym% gym".replaceAll("%gym%", targetGym.display));
+                    if (!PermissionUtils.canUse(targetGym.getPermission(), sender)) {
+                        ServerUtils.send(sender, "&cYou're not allowed to retrieve gym teams for the %gym% gym".replaceAll("%gym%", targetGym.getDisplay()));
                         return;
                     }
 
                     Task.builder().execute(new StorePokemonTask(gymPlayerWrapper.getUuid())).iterations(1).build();
                     PlayerPartyStorage playerPartyStorage = Pixelmon.storageManager.getParty(gymPlayerWrapper.getUuid());
                     Task.builder().delay(5).execute(()-> {
-                        for (Pokemon gymPokemon : targetGym.setGymPokemon(targetGym.key)) {
+                        for (Pokemon gymPokemon : targetGym.setGymPokemon(targetGym.getKey())) {
                             if (gymPokemon != null)
                                 playerPartyStorage.add(gymPokemon);
                         }
                     }).iterations(1).build();
-                    ServerUtils.send(sender, "&eYou received the Gym Team for the %gym% Gym!".replaceAll("%gym%", targetGym.display));
+                    ServerUtils.send(sender, "&eYou received the Gym Team for the %gym% Gym!".replaceAll("%gym%", targetGym.getDisplay()));
                 } else ServerUtils.send(sender, "&cYou're not allowed to run this command");
             }
 
@@ -195,7 +195,7 @@ public class Command extends CommandBase {
                         ServerUtils.send(sender, "&cIt seems there was an issue loading the Gym");
                         return;
                     }
-                    if (challengingGym.gymQueue.containsKey(gymPlayerWrapper.getUuid())) {
+                    if (challengingGym.getGymQueue().containsKey(gymPlayerWrapper.getUuid())) {
                         ServerUtils.send(sender, "&eYou're already in the queue for this Gym!");
                         return;
                     }
@@ -248,8 +248,8 @@ public class Command extends CommandBase {
                     long date = System.currentTimeMillis();
                     String convertedDate = DateFormat.getDateTimeInstance().format(date);
                     gymBadge.setDate(convertedDate);
-                    gymBadge.setItemstring(gym.badgeitemstring);
-                    gymBadge.setBadgedisplay(gym.display);
+                    gymBadge.setItemstring(gym.getBadgeitemstring());
+                    gymBadge.setBadgedisplay(gym.getDisplay());
                     EntityPlayerMP leader = ServerUtils.getPlayer(sender.getName());
                     PlayerPartyStorage pps = Pixelmon.storageManager.getParty(playerMP.getUniqueID());
                     for (Pokemon pokemon : pps.getAll()) {
@@ -265,8 +265,8 @@ public class Command extends CommandBase {
                         return;
                     }
                     gymBadge.setLeader(leader.getName());
-                    gymBadge.setBadgeName(gym.key);
-                    gymBadge.setGym(gym.key);
+                    gymBadge.setBadgeName(gym.getKey());
+                    gymBadge.setGym(gym.getKey());
                     gymBadge.setObtained(true);
                     GymMethods.giveGymBadge(gymPlayerWrapper, gymBadge);
 

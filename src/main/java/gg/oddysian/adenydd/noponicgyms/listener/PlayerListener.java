@@ -36,9 +36,9 @@ public class PlayerListener {
         for (GymsRegistry.Gym gym: GymsRegistry.gyms) {
             if (ServerUtils.isPlayerOnline(event.player.getUniqueID())) {
                 playerMP = ServerUtils.getPlayer(event.player.getName());
-                if (PermissionUtils.hasPermission(gym.permission, playerMP)) {
-                    if (!gym.gymLeaderList.contains(playerMP.getName()))
-                        gym.gymLeaderList.add(playerMP.getName());
+                if (PermissionUtils.hasPermission(gym.getPermission(), playerMP)) {
+                    if (!gym.getGymLeaderList().contains(playerMP.getName()))
+                        gym.getGymLeaderList().add(playerMP.getName());
                     GymMethods.updateGym(gym, true);
                 }
             }
@@ -54,11 +54,11 @@ public class PlayerListener {
 
             playerMP = ServerUtils.getPlayer(event.player.getName());
 
-                if (PermissionUtils.hasPermission(gym.permission, playerMP)) {
+                if (PermissionUtils.hasPermission(gym.getPermission(), playerMP)) {
 
-                    gym.gymLeaderList.remove(playerMP.getName());
+                    gym.getGymLeaderList().remove(playerMP.getName());
 
-                    if (gym.gymLeaderList.isEmpty())
+                    if (gym.getGymLeaderList().isEmpty())
                     GymMethods.updateGym(gym, false);
                 }
         }

@@ -1,9 +1,12 @@
 package gg.oddysian.adenydd.noponicgyms;
 
+import com.pixelmonmod.pixelmon.Pixelmon;
 import gg.oddysian.adenydd.noponicgyms.commands.Command;
+import gg.oddysian.adenydd.noponicgyms.listener.PixelmonListener;
 import gg.oddysian.adenydd.noponicgyms.storage.config.Config;
 import gg.oddysian.adenydd.noponicgyms.storage.config.GymConfig;
 import gg.oddysian.adenydd.noponicgyms.listener.PlayerListener;
+import gg.oddysian.adenydd.noponicgyms.storage.config.LanguageConfig;
 import gg.oddysian.adenydd.noponicgyms.storage.registry.GymsRegistry;
 import gg.oddysian.adenydd.noponicgyms.storage.registry.ModeRegistry;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -52,6 +55,7 @@ public class NoponicGyms {
         loadConfig(); //Load all configs
 
         playerListener = new PlayerListener();
+        Pixelmon.EVENT_BUS.register(PixelmonListener.class);
     }
 
     @Mod.EventHandler
@@ -64,6 +68,7 @@ public class NoponicGyms {
     private void initConfig() {
         Config.getConfig().setup();
         GymConfig.getConfig().setup();
+        LanguageConfig.getConfig().setup();
     }
 
     public void initOBJ() {
@@ -73,6 +78,7 @@ public class NoponicGyms {
 
     public void loadConfig() {
         Config.getConfig().load();
+        LanguageConfig.getConfig().load();
         GymConfig.getConfig().load();
     }
 

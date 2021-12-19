@@ -43,7 +43,8 @@ public class GymConfig extends Configurable {
         this.get().getNode("Gyms", "Example", "Permission").setValue("gyms.examplegym.leader");
         this.get().getNode("Gyms", "Example", "LevelCap").setValue(10);
         this.get().getNode("Gyms", "Example", "UI", "Display").setValue("&b&lExample Gym");
-        this.get().getNode("Gyms", "Example", "UI", "Lore").setValue(Arrays.asList("&cThis is the %gym% Gym", "The following leaders are online: %availableleaders%", "Gym Level: %gymlevel%"));
+        this.get().getNode("Gyms", "Example", "UI", "Weight").setValue(1);
+        this.get().getNode("Gyms", "Example", "UI", "Lore").setValue(Arrays.asList("&cThis is the %gym% Gym, the gym is %open%", "The following leaders are online: %availableleaders%", "Gym Level: %gymlevel%"));
         this.get().getNode("Gyms", "Example", "Badge").setValue("minecraft:paper");
         this.get().getNode("Gyms", "Example", "GymPokemon", "Vulpix", "PokemonName").setValue("Vulpix");
         this.get().getNode("Gyms", "Example", "GymPokemon", "Vulpix", "HeldItem").setValue("pixelmon:leftovers");
