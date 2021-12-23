@@ -183,7 +183,7 @@ public class UI {
         return Page.builder().template(template.build()).title("Gyms").dynamicContentArea(1, 1, 3, 7).dynamicContents(gyms(GymsRegistry.gyms)).build();
     }
 
-    public static Page tiers(GymPlayer gymPlayerWrapper) {
+    public static Page GymModes(GymPlayer gymPlayerWrapper) {
         Template.Builder template = Template.builder(5);
 
         int i = 0;
@@ -200,7 +200,7 @@ public class UI {
         }
 
         template.fill(filler());
-        return Page.builder().template(template.build()).title("GymsRegistry").build();
+        return Page.builder().template(template.build()).title("Gyms").build();
     }
 
     public static Page gymBadges(GymPlayer gymPlayer, boolean isSpying) {

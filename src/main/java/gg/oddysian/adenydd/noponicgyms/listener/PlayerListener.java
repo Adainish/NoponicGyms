@@ -34,9 +34,16 @@ public class PlayerListener {
         EntityPlayerMP playerMP;
 
         for (GymsRegistry.Gym gym: GymsRegistry.gyms) {
+            if (gym == null)
+                continue;
+
             if (ServerUtils.isPlayerOnline(event.player.getUniqueID())) {
                 playerMP = ServerUtils.getPlayer(event.player.getName());
-                if (PermissionUtils.hasPermission(gym.getPermission(), playerMP)) {
+
+                if (gym.getPermission().isEmpty() || gym.getPermission() == null)
+                    continue;
+
+                if (PermissionUtils.canUse(gym.getPermission(), playerMP)) {
                     if (!gym.getGymLeaderList().contains(playerMP.getName()))
                         gym.getGymLeaderList().add(playerMP.getName());
                     GymMethods.updateGym(gym, true);
@@ -52,9 +59,21 @@ public class PlayerListener {
 
         for (GymsRegistry.Gym gym: GymsRegistry.gyms) {
 
-            playerMP = ServerUtils.getPlayer(event.player.getName());
+            if (gym == null)
+                continue;
 
-                if (PermissionUtils.hasPermission(gym.getPermission(), playerMP)) {
+            playerMP = (EntityPlayerMP) event.player;
+
+            if (playerMP == null) {
+                if (gym.getGymLeaderList().isEmpty())
+                    GymMethods.updateGym(gym, false);
+                continue;
+            }
+
+            if (gym.getPermission().isEmpty() || gym.getPermission() == null)
+                continue;
+
+                if (PermissionUtils.canUse(gym.getPermission(), playerMP)) {
 
                     gym.getGymLeaderList().remove(playerMP.getName());
 

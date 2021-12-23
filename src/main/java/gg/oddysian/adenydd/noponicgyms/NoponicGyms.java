@@ -1,5 +1,6 @@
 package gg.oddysian.adenydd.noponicgyms;
 
+import com.cable.library.tasks.Task;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import gg.oddysian.adenydd.noponicgyms.commands.Command;
 import gg.oddysian.adenydd.noponicgyms.listener.PixelmonListener;
@@ -9,6 +10,7 @@ import gg.oddysian.adenydd.noponicgyms.listener.PlayerListener;
 import gg.oddysian.adenydd.noponicgyms.storage.config.LanguageConfig;
 import gg.oddysian.adenydd.noponicgyms.storage.registry.GymsRegistry;
 import gg.oddysian.adenydd.noponicgyms.storage.registry.ModeRegistry;
+import gg.oddysian.adenydd.noponicgyms.tasks.UpdateGyms;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
@@ -63,6 +65,7 @@ public class NoponicGyms {
 
         initOBJ();
         event.registerServerCommand(new Command());
+        Task.builder().execute(new UpdateGyms()).infiniteIterations().interval(20).build();
     }
 
     private void initConfig() {

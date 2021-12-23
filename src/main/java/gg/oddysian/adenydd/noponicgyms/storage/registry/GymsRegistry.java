@@ -16,6 +16,7 @@ import gg.oddysian.adenydd.noponicgyms.storage.config.GymConfig;
 import gg.oddysian.adenydd.noponicgyms.storage.obj.GymPlayer;
 import info.pixelmon.repack.ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import info.pixelmon.repack.ninja.leaping.configurate.objectmapping.ObjectMappingException;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -84,14 +85,15 @@ public class GymsRegistry {
     }
 
     public static class Gym {
-        private List<String> gymLeaderList;
-        private HashMap<UUID, GymPlayer> gymQueue;
-        private ItemStack gymBadge;
-        private String key;
-        private String permission;
-        private String tier;
-        private String leadermessage;
-        private String badgeitemstring;
+        private List<String> gymLeaderList = new ArrayList <>();
+        private HashMap<UUID, GymPlayer> gymQueue = new HashMap <>();
+        private ItemStack gymBadge = new ItemStack(Items.DIAMOND);
+        private String key = "";
+        private String permission = "";
+        private String tier = "";
+        private String leadermessage = "";
+        private String badgeitemstring = "";
+        private List<String> rewards = new ArrayList <>();
         private boolean opened = false;
         private int weight = 0;
         private int levelcap = 10;
@@ -100,6 +102,7 @@ public class GymsRegistry {
         private double posY = 0.0;
         private double posZ = 0.0;
 
+        private String mode = "";
         private int leaderWorldID = 0;
         private double leaderPosX= 0.0;
         private double leaderPosY = 0.0;
@@ -138,7 +141,7 @@ public class GymsRegistry {
             this.setChallengerPosY(GymConfig.getConfig().get().getNode("Gyms", key, "Warp", "Challenger", "Y").getDouble());
             this.setChallengerPosZ(GymConfig.getConfig().get().getNode("Gyms", key, "Warp", "Challenger", "Z").getDouble());
 
-
+            this.setMode(GymConfig.getConfig().get().getNode("Gyms", key, "Mode").getString());
             this.setBadgeitemstring(GymConfig.getConfig().get().getNode("Gyms", key, "Badge").getString());
             this.setKey(key);
             this.setWeight(GymConfig.getConfig().get().getNode("Gyms", key, "UI", "Weight").getInt());
@@ -147,6 +150,11 @@ public class GymsRegistry {
             this.setTier(GymConfig.getConfig().get().getNode("Gyms", key, "Tier").getString());
             this.setLeadermessage(GymConfig.getConfig().get().getNode("Gyms", key, "LeaderMessage").getString());
             this.setLevelcap(GymConfig.getConfig().get().getNode("Gyms", key, "LevelCap").getInt());
+            try {
+                this.setRewards(GymConfig.getConfig().get().getNode("Gyms", key, "Rewards").getList(TypeToken.of(String.class)));
+            } catch (ObjectMappingException e) {
+                e.printStackTrace();
+            }
             try {
                 this.setLore(GymConfig.getConfig().get().getNode("Gyms", key, "UI", "Lore").getList(TypeToken.of(String.class)));
             } catch (ObjectMappingException e) {
@@ -572,6 +580,22 @@ public class GymsRegistry {
 
         public void setFeeCost(double feeCost) {
             this.feeCost = feeCost;
+        }
+
+        public List <String> getRewards() {
+            return rewards;
+        }
+
+        public void setRewards(List <String> rewards) {
+            this.rewards = rewards;
+        }
+
+        public String getMode() {
+            return mode;
+        }
+
+        public void setMode(String mode) {
+            this.mode = mode;
         }
     }
 }

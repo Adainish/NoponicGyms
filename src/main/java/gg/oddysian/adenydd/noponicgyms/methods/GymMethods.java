@@ -39,6 +39,7 @@ public class GymMethods {
         ServerUtils.send(playerMP, sendMSG.replaceAll("%gym%", gymBadge.getGym()).replaceAll("%badge%", gymBadge.getBadgeName()));
         ServerUtils.doBroadcast(broadCast.replaceAll("%player%", gymPlayer.getName()).replaceAll("%gym%", gymBadge.getGym()).replaceAll("%badge%", gymBadge.getBadgeName()));
         StoreMethods.writeGymBadge(playerMP, gymBadge);
+
     }
 
     public static void takeGymBadge(GymPlayer gymPlayer, GymBadge gymBadge) {

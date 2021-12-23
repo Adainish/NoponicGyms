@@ -243,6 +243,7 @@ public class Command extends CommandBase {
 
                     if (gymPlayerWrapper.hasSpecificBadge(arguments[2])) {
                         ServerUtils.send(sender, "&cYou can't give a badge twice!");
+                        return;
                     }
 
                     long date = System.currentTimeMillis();
@@ -269,6 +270,11 @@ public class Command extends CommandBase {
                     gymBadge.setGym(gym.getKey());
                     gymBadge.setObtained(true);
                     GymMethods.giveGymBadge(gymPlayerWrapper, gymBadge);
+                    for (String cmd:gym.getRewards()) {
+                        if (cmd == null ||cmd.isEmpty())
+                            continue;
+                        ServerUtils.runCommand(cmd.replaceAll("@pl", playerMP.getName()));
+                    }
 
                 }
                 if (arguments[0].equalsIgnoreCase("takebadge")) {
