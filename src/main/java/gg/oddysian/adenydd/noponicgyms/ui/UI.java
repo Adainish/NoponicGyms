@@ -1,17 +1,19 @@
 package gg.oddysian.adenydd.noponicgyms.ui;
 
 import ca.landonjw.gooeylibs.inventory.api.Button;
+import ca.landonjw.gooeylibs.inventory.api.InventoryAPI;
 import ca.landonjw.gooeylibs.inventory.api.Page;
 import ca.landonjw.gooeylibs.inventory.api.Template;
+import com.cable.library.tasks.Task;
 import com.pixelmonmod.pixelmon.config.PixelmonItemsTMs;
 import com.pixelmonmod.pixelmon.enums.technicalmoves.ITechnicalMove;
 import gg.oddysian.adenydd.noponicgyms.NoponicGyms;
 import gg.oddysian.adenydd.noponicgyms.storage.obj.GymBadge;
-import gg.oddysian.adenydd.noponicgyms.storage.obj.GymObj;
+import gg.oddysian.adenydd.noponicgyms.storage.registry.GymsRegistry;
 import gg.oddysian.adenydd.noponicgyms.storage.obj.GymPlayer;
-import gg.oddysian.adenydd.noponicgyms.storage.obj.ModeObj;
+import gg.oddysian.adenydd.noponicgyms.storage.registry.ModeRegistry;
+import gg.oddysian.adenydd.noponicgyms.tasks.TeleportTask;
 import gg.oddysian.adenydd.noponicgyms.util.ServerUtils;
-import gg.oddysian.adenydd.noponicgyms.wrapper.GymPlayerWrapper;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -20,9 +22,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class UI {
 
@@ -100,17 +100,29 @@ public class UI {
         return formattedInfo;
     }
 
-    public static List<Button> gyms(List<GymObj.Gym> gyms) {
+    public static List<Button> gyms(List<GymsRegistry.Gym> gyms) {
         List<Button> buttonList = new ArrayList<>();
 
-        for (GymObj.Gym gym: gyms) {
+        for (GymsRegistry.Gym gym: gyms) {
             List<String> lore = new ArrayList<>();
 
-            for (String s:gym.lore) {
-                lore.add(s.replaceAll("%gym%", gym.display).replaceAll("%availableleaders%", String.valueOf(gym.gymLeaderList)).replaceAll("%gymlevel%", String.valueOf(gym.levelcap)));
+            for (String s: gym.getLore()) {
+                String openStatus = "&aOpen";
+                if (!gym.isOpened())
+                    openStatus = "&4Closed";
+                lore.add(s.replaceAll("%gym%", gym.getDisplay()).replaceAll("%availableleaders%", String.valueOf(gym.getGymLeaderList())).replaceAll("%gymlevel%", String.valueOf(gym.getLevelcap())).replaceAll("%open%", openStatus));
             }
-            Button button = Button.builder().item(gym.gymBadge).lore(getFormattedList(lore)).displayName(getFormattedDisplayName(gym.display)).build();
+            Button button = Button.builder()
+                    .item(gym.getGymBadge())
+                    .lore(getFormattedList(lore))
+                    .onClick(buttonAction -> {
+                        InventoryAPI.getInstance().closePlayerInventory(buttonAction.getPlayer());
+                        Task.builder().iterations(1).execute(new TeleportTask(buttonAction.getPlayer(), gym.getWorldID(), gym.getPosX(), gym.getPosY(), gym.getPosZ())).build();
+                    })
+                    .displayName(getFormattedDisplayName(gym.getDisplay()))
+                    .build();
             buttonList.add(button);
+
         }
         return buttonList;
     }
@@ -168,14 +180,14 @@ public class UI {
     public static Page gyms() {
         Template.Builder template = Template.builder(5);
         template.fill(filler());
-        return Page.builder().template(template.build()).title("Gyms").dynamicContentArea(1, 1, 3, 7).dynamicContents(gyms(GymObj.gyms)).build();
+        return Page.builder().template(template.build()).title("Gyms").dynamicContentArea(1, 1, 3, 7).dynamicContents(gyms(GymsRegistry.gyms)).build();
     }
 
-    public static Page tiers(GymPlayer gymPlayerWrapper) {
+    public static Page GymModes(GymPlayer gymPlayerWrapper) {
         Template.Builder template = Template.builder(5);
 
         int i = 0;
-        for (String s : ModeObj.modeList()) {
+        for (String s : ModeRegistry.modeList()) {
             i++;
             Button button = Button.builder()
                     .displayName(s)

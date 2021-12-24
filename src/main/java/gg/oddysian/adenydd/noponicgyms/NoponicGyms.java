@@ -1,11 +1,16 @@
 package gg.oddysian.adenydd.noponicgyms;
 
+import com.cable.library.tasks.Task;
+import com.pixelmonmod.pixelmon.Pixelmon;
 import gg.oddysian.adenydd.noponicgyms.commands.Command;
+import gg.oddysian.adenydd.noponicgyms.listener.PixelmonListener;
 import gg.oddysian.adenydd.noponicgyms.storage.config.Config;
 import gg.oddysian.adenydd.noponicgyms.storage.config.GymConfig;
 import gg.oddysian.adenydd.noponicgyms.listener.PlayerListener;
-import gg.oddysian.adenydd.noponicgyms.storage.obj.GymObj;
-import gg.oddysian.adenydd.noponicgyms.storage.obj.ModeObj;
+import gg.oddysian.adenydd.noponicgyms.storage.config.LanguageConfig;
+import gg.oddysian.adenydd.noponicgyms.storage.registry.GymsRegistry;
+import gg.oddysian.adenydd.noponicgyms.storage.registry.ModeRegistry;
+import gg.oddysian.adenydd.noponicgyms.tasks.UpdateGyms;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
@@ -52,6 +57,7 @@ public class NoponicGyms {
         loadConfig(); //Load all configs
 
         playerListener = new PlayerListener();
+        Pixelmon.EVENT_BUS.register(PixelmonListener.class);
     }
 
     @Mod.EventHandler
@@ -59,20 +65,23 @@ public class NoponicGyms {
 
         initOBJ();
         event.registerServerCommand(new Command());
+        Task.builder().execute(new UpdateGyms()).infiniteIterations().interval(20).build();
     }
 
     private void initConfig() {
         Config.getConfig().setup();
         GymConfig.getConfig().setup();
+        LanguageConfig.getConfig().setup();
     }
 
     public void initOBJ() {
-        GymObj.loadGyms();
-        ModeObj.loadGymModes();
+        GymsRegistry.loadGyms();
+        ModeRegistry.loadGymModes();
     }
 
     public void loadConfig() {
         Config.getConfig().load();
+        LanguageConfig.getConfig().load();
         GymConfig.getConfig().load();
     }
 

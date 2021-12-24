@@ -25,6 +25,9 @@ public class CleanRentalsTask implements Consumer<Task> {
         PokemonStorage pokemonStorage = Pixelmon.storageManager.getPCForPlayer(uuid);
         for (Pokemon pokemon: pps.getAll()) {
 
+            if (pokemon == null)
+                continue;
+
             if (pokemon.isEgg())
                 continue;
 
@@ -37,6 +40,10 @@ public class CleanRentalsTask implements Consumer<Task> {
         }
 
         for (Pokemon pokemon: pokemonStorage.getAll()) {
+
+            if (pokemon == null)
+                continue;
+
             if (pokemon.isEgg())
                 continue;
 

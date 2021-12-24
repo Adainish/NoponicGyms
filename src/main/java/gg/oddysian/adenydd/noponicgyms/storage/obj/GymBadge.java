@@ -1,10 +1,9 @@
 package gg.oddysian.adenydd.noponicgyms.storage.obj;
 
-import gg.oddysian.adenydd.noponicgyms.storage.capability.interfaces.IGymBadge;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GymBadge implements IGymBadge {
+public class GymBadge {
 
     private String gym;
     private String badgeName;
@@ -19,7 +18,6 @@ public class GymBadge implements IGymBadge {
 
 
 
-    @Override
     public void setPokemon(List<String> pokemonNames) {
         this.pokemon = pokemonNames;
     }
@@ -28,37 +26,30 @@ public class GymBadge implements IGymBadge {
         return this.pokemon;
     }
 
-    @Override
     public String getDate() {
         return date;
     }
 
-    @Override
     public void setLeader(String leader) {
         this.leader = leader;
     }
 
-    @Override
     public void setBadgeName(String badgeName) {
         this.badgeName = badgeName;
     }
 
-    @Override
     public String getBadgeName() {
         return badgeName;
     }
 
-    @Override
     public Boolean getObtained() {
         return this.obtained;
     }
 
-    @Override
     public void setDate(String date) {
         this.date = date;
     }
 
-    @Override
     public void addPokemon(String pokemon) {
         this.pokemon.add(pokemon);
     }

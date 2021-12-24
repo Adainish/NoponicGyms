@@ -48,7 +48,7 @@ public class ServerUtils {
         sender.sendMessage(new TextComponentString((Config.getConfig().get().getNode("ServerPrefix").getString() + " " + message).replaceAll("&([0-9a-fk-or])", "\u00a7$1")));
     }
     public static void doBroadcast(String message) {
-        SERVER.getPlayerList().sendMessage(new TextComponentString(message.replaceAll("&([0-9a-fk-or])","\u00a7$1")));
+        SERVER.getPlayerList().sendMessage(new TextComponentString(Config.getConfig().get().getNode("ServerPrefix").getString().replaceAll("&([0-9a-fk-or])","\u00a7$1") + " " + message.replaceAll("&([0-9a-fk-or])","\u00a7$1")));
     }
 
     public static void runCommand(String cmd) {

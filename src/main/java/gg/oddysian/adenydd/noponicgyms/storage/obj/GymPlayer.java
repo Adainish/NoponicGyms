@@ -83,4 +83,5 @@ public class GymPlayer {
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
     }
+
 }
