@@ -311,11 +311,11 @@ public class Command extends CommandBase {
             possibleArgs.add("list");
             possibleArgs.add("challenge");
             possibleArgs.add("queue");
-            if (sender instanceof EntityPlayerMP && PermissionUtils.canUse(PermissionManager.LEADER_GIVE, (EntityPlayerMP) sender))
+            if (sender instanceof EntityPlayerMP && PermissionUtils.canUse(PermissionManager.LEADER_GIVE, sender))
             possibleArgs.add("checkbadges");
-            if (sender instanceof EntityPlayerMP && PermissionUtils.canUse(PermissionManager.LEADER_GIVE, (EntityPlayerMP) sender))
+            if (sender instanceof EntityPlayerMP && PermissionUtils.canUse(PermissionManager.LEADER_GIVE, sender))
             possibleArgs.add("givebadge");
-            if (sender instanceof EntityPlayerMP && PermissionUtils.canUse(PermissionManager.LEADER_TAKE, (EntityPlayerMP) sender))
+            if (sender instanceof EntityPlayerMP && PermissionUtils.canUse(PermissionManager.LEADER_TAKE, sender))
             possibleArgs.add("takebadge");
         }
         if (args.length == 2) {
