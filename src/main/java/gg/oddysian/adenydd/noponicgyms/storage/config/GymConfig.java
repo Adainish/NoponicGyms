@@ -84,10 +84,8 @@ public class GymConfig extends Configurable {
         this.get().getNode("Gyms", "Example", "GymPokemon", "Vulpix", "Stats", "IVS", "SPDEF").setValue(31);
         this.get().getNode("Gyms", "Example", "GymPokemon", "Vulpix", "Stats", "IVS", "SPD").setValue(31);
 
-        this.get().getNode("Gyms", "Example", "GymPokemon", "Vulpix", "MoveSet", "1").setValue("Quick Attack");
-        this.get().getNode("Gyms", "Example", "GymPokemon", "Vulpix", "MoveSet", "2").setValue("Shadow Ball");
-        this.get().getNode("Gyms", "Example", "GymPokemon", "Vulpix", "MoveSet", "3").setValue("Incinerate");
-        this.get().getNode("Gyms", "Example", "GymPokemon", "Vulpix", "MoveSet", "4").setValue("Hidden Power");
+        this.get().getNode("Gyms", "Example", "GymPokemon", "Vulpix", "MoveSet").setValue(Arrays.asList("Quick Attack", "Hidden Power", "Shadow Ball", "Incinerate"));
+        this.get().getNode("Gyms", "Example", "GymPokemon", "Vulpix", "SpecFlags").setValue(Arrays.asList("unbreedable", "untradeable"));
 
 
         this.get().getNode("Gyms", "Example", "GymPokemon", "Ninetales", "PokemonName").setValue("Ninetales");
@@ -114,11 +112,8 @@ public class GymConfig extends Configurable {
         this.get().getNode("Gyms", "Example", "GymPokemon", "Ninetales", "Stats", "IVS", "SPDEF").setValue(31);
         this.get().getNode("Gyms", "Example", "GymPokemon", "Ninetales", "Stats", "IVS", "SPD").setValue(31);
 
-        this.get().getNode("Gyms", "Example", "GymPokemon", "Ninetales", "MoveSet", "1").setValue("Quick Attack");
-        this.get().getNode("Gyms", "Example", "GymPokemon", "Ninetales", "MoveSet", "2").setValue("Shadow Ball");
-        this.get().getNode("Gyms", "Example", "GymPokemon", "Ninetales", "MoveSet", "3").setValue("Incinerate");
-        this.get().getNode("Gyms", "Example", "GymPokemon", "Ninetales", "MoveSet", "4").setValue("Hidden Power");
-
+        this.get().getNode("Gyms", "Example", "GymPokemon", "Ninetales", "MoveSet").setValue(Arrays.asList("Quick Attack", "Hidden Power", "Shadow Ball", "Incinerate"));
+        this.get().getNode("Gyms", "Example", "GymPokemon", "Ninetales", "SpecFlags").setValue(Arrays.asList("unbreedable", "untradeable"));
     }
 
     public String getConfigName() {

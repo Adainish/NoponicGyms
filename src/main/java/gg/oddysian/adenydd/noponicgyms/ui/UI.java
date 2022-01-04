@@ -1,9 +1,14 @@
 package gg.oddysian.adenydd.noponicgyms.ui;
 
-import ca.landonjw.gooeylibs.inventory.api.Button;
-import ca.landonjw.gooeylibs.inventory.api.InventoryAPI;
-import ca.landonjw.gooeylibs.inventory.api.Page;
-import ca.landonjw.gooeylibs.inventory.api.Template;
+import ca.landonjw.gooeylibs2.api.UIManager;
+import ca.landonjw.gooeylibs2.api.button.Button;
+import ca.landonjw.gooeylibs2.api.button.GooeyButton;
+import ca.landonjw.gooeylibs2.api.button.PlaceholderButton;
+import ca.landonjw.gooeylibs2.api.helpers.PaginationHelper;
+import ca.landonjw.gooeylibs2.api.page.LinkedPage;
+import ca.landonjw.gooeylibs2.api.page.Page;
+import ca.landonjw.gooeylibs2.api.template.Template;
+import ca.landonjw.gooeylibs2.api.template.types.ChestTemplate;
 import com.cable.library.tasks.Task;
 import com.pixelmonmod.pixelmon.config.PixelmonItemsTMs;
 import com.pixelmonmod.pixelmon.enums.technicalmoves.ITechnicalMove;
@@ -81,10 +86,10 @@ public class UI {
         return itemType;
     }
 
-    private static Button filler() {
-        return Button.builder()
-                .item(new ItemStack(Blocks.STAINED_GLASS_PANE, 1, EnumDyeColor.GRAY.getMetadata()))
-                .displayName("")
+    private static GooeyButton filler() {
+        return GooeyButton.builder()
+                .display(new ItemStack(Blocks.STAINED_GLASS_PANE, 1, EnumDyeColor.GRAY.getMetadata()))
+                .title("")
                 .build();
     }
 
@@ -112,14 +117,14 @@ public class UI {
                     openStatus = "&4Closed";
                 lore.add(s.replaceAll("%gym%", gym.getDisplay()).replaceAll("%availableleaders%", String.valueOf(gym.getGymLeaderList())).replaceAll("%gymlevel%", String.valueOf(gym.getLevelcap())).replaceAll("%open%", openStatus));
             }
-            Button button = Button.builder()
-                    .item(gym.getGymBadge())
+            Button button = GooeyButton.builder()
+                    .display(gym.getGymBadge())
                     .lore(getFormattedList(lore))
                     .onClick(buttonAction -> {
-                        InventoryAPI.getInstance().closePlayerInventory(buttonAction.getPlayer());
+                        UIManager.closeUI(buttonAction.getPlayer());
                         Task.builder().iterations(1).execute(new TeleportTask(buttonAction.getPlayer(), gym.getWorldID(), gym.getPosX(), gym.getPosY(), gym.getPosZ())).build();
                     })
-                    .displayName(getFormattedDisplayName(gym.getDisplay()))
+                    .title(getFormattedDisplayName(gym.getDisplay()))
                     .build();
             buttonList.add(button);
 
@@ -154,7 +159,7 @@ public class UI {
                     lore.addAll(b.getPokemon());
                 }
 
-                Button button = Button.builder().item(stack).lore(getFormattedList(lore)).displayName(getFormattedDisplayName(display)).build();
+                GooeyButton button = GooeyButton.builder().display(stack).lore(getFormattedList(lore)).title(getFormattedDisplayName(display)).build();
                 buttonList.add(button);
             }
         } else {
@@ -169,7 +174,7 @@ public class UI {
                     display = b.getBadgedisplay();
                     lore = Arrays.asList("&e%player% defeated the %gym%".replaceAll("%gym%", b.getBadgeName()).replaceAll("%player%", player.getName()));
                 }
-                Button button = Button.builder().item(stack).lore(getFormattedList(lore)).displayName(getFormattedDisplayName(display)).build();
+                GooeyButton button = GooeyButton.builder().display(stack).lore(getFormattedList(lore)).title(getFormattedDisplayName(display)).build();
                 buttonList.add(button);
             }
         }
@@ -177,36 +182,18 @@ public class UI {
         return buttonList;
     }
 
-    public static Page gyms() {
-        Template.Builder template = Template.builder(5);
-        template.fill(filler());
-        return Page.builder().template(template.build()).title("Gyms").dynamicContentArea(1, 1, 3, 7).dynamicContents(gyms(GymsRegistry.gyms)).build();
+    public static LinkedPage gyms() {
+        PlaceholderButton placeHolderButton = new PlaceholderButton();
+        Template template = ChestTemplate.builder(5).rectangle(1, 1, 3,  7, placeHolderButton).fill(filler()).build();
+
+        return PaginationHelper.createPagesFromPlaceholders(template, gyms(GymsRegistry.gyms), LinkedPage.builder().title("Gyms").template(template));
     }
 
-    public static Page GymModes(GymPlayer gymPlayerWrapper) {
-        Template.Builder template = Template.builder(5);
 
-        int i = 0;
-        for (String s : ModeRegistry.modeList()) {
-            i++;
-            Button button = Button.builder()
-                    .displayName(s)
-                    .onClick(buttonAction -> {
-                        gyms().forceOpenPage(ServerUtils.getPlayer(gymPlayerWrapper.getName()));
-                    })
-                    .item(new ItemStack(Items.DIAMOND))
-                    .build();
-            template.set(3, i, button);
-        }
-
-        template.fill(filler());
-        return Page.builder().template(template.build()).title("Gyms").build();
-    }
-
-    public static Page gymBadges(GymPlayer gymPlayer, boolean isSpying) {
-        Template.Builder template = Template.builder(5);
-        template.fill(filler());
-        return Page.builder().template(template.build()).dynamicContentArea(1, 1, 3, 7).dynamicContents(playerBadges(gymPlayer, isSpying)).title("%player%'s Badges".replaceAll("%player%", gymPlayer.getName())).build();
+    public static LinkedPage gymBadges(GymPlayer gymPlayer, boolean isSpying) {
+        PlaceholderButton placeholderButton = new PlaceholderButton();
+        Template template = ChestTemplate.builder(5).fill(filler()).rectangle(1, 1, 3, 7, placeholderButton).build();
+        return  PaginationHelper.createPagesFromPlaceholders(template, playerBadges(gymPlayer, isSpying), LinkedPage.builder().title("%player%'s Badges".replaceAll("%player%", gymPlayer.getName())).template(template));
     }
 
 }

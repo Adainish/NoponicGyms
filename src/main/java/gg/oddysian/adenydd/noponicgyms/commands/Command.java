@@ -1,5 +1,6 @@
 package gg.oddysian.adenydd.noponicgyms.commands;
 
+import ca.landonjw.gooeylibs2.api.UIManager;
 import com.cable.library.tasks.Task;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
@@ -24,12 +25,14 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class Command extends CommandBase {
     @Override
@@ -93,7 +96,7 @@ public class Command extends CommandBase {
                 if (PermissionUtils.canUse("noponicgyms.user.checkbadges", sender)) {
                     EntityPlayerMP playerMP = ServerUtils.getInstance().getPlayerList().getPlayerByUUID(sender.getCommandSenderEntity().getUniqueID());
                     GymPlayer gymPlayer = GymPlayerWrapper.gymPlayerHashMap.get(playerMP.getUniqueID());
-                    UI.gymBadges(gymPlayer, false).openPage(playerMP);
+                    UIManager.openUIPassively(playerMP, UI.gymBadges(gymPlayer, false), 20, TimeUnit.SECONDS);
                 } else {
                     ServerUtils.send(sender, "&b(&e!&b) &eYou're not allowed to use this command");
 
@@ -104,8 +107,7 @@ public class Command extends CommandBase {
             if (arguments[0].contains("list")) {
                 if (PermissionUtils.canUse("noponicgyms.user.listgyms", sender)) {
                     EntityPlayerMP playerMP = ServerUtils.getInstance().getPlayerList().getPlayerByUUID(sender.getCommandSenderEntity().getUniqueID());
-                    UI.gyms().openPage(ServerUtils.getPlayer(playerMP.getName()));
-
+                    UIManager.openUIPassively(playerMP, UI.gyms(), 20, TimeUnit.SECONDS);
                 } else {
                     ServerUtils.send(sender, "&b(&e!&b) &eYou're not allowed to use this command");
                 }
@@ -133,7 +135,7 @@ public class Command extends CommandBase {
                         return;
                     }
 
-                    UI.gymBadges(GymPlayerWrapper.gymPlayerHashMap.get(target.getUniqueID()), true).openPage(opener);
+                    UIManager.openUIPassively(opener, UI.gymBadges(GymPlayerWrapper.gymPlayerHashMap.get(target.getUniqueID()), true), 20, TimeUnit.SECONDS);
                     ServerUtils.send(sender, "Checking %targets% gym badges!".replaceAll("%targets%", target.getName()));
 
                 } else {
@@ -294,6 +296,11 @@ public class Command extends CommandBase {
     @Override
     public int getRequiredPermissionLevel() {
         return 0;
+    }
+
+    @Override
+    public @NotNull List <String> getAliases() {
+        return Arrays.asList("gyms", "gym", "agp");
     }
 
 

@@ -206,6 +206,12 @@ public class GymsRegistry {
                 e.printStackTrace();
             }
 
+            List<String> specFlags = new ArrayList <>();
+            try {
+                specFlags = GymConfig.getConfig().get().getNode("Gyms", gymKey, "GymPokemon", node, "SpecFlags").getList(TypeToken.of(String.class));
+            } catch (ObjectMappingException e) {
+                e.printStackTrace();
+            }
             //Evs
 
             int evsHP = GymConfig.getConfig().get().getNode("Gyms", gymKey, "GymPokemon", node, "Stats", "EVS", "HP").getInt();
@@ -294,7 +300,11 @@ public class GymsRegistry {
             pokemon.setDynamaxLevel(dynamaxLevel);
             pokemon.setDoesLevel(false);
             pokemon.addSpecFlag("gympokemon");
-
+            if (specFlags != null && !specFlags.isEmpty()) {
+                for (String s : specFlags) {
+                    pokemon.addSpecFlag(s);
+                }
+            }
             return pokemon;
         }
 
