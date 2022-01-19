@@ -27,14 +27,23 @@ public class GymConfig extends Configurable {
         this.get().getNode("Modes", "Tier1", "Info").setValue(Arrays.asList("This is the first tier of the gym system", "&eColour Codes")).setComment("");
         this.get().getNode("Modes", "Tier1", "NPCOnly").setValue(false).setComment("");
         this.get().getNode("Modes", "Tier1", "EnableNPC").setValue(true).setComment("Whether NPCS should be enabled for this gym if no Player Leaders are online");
+        this.get().getNode("Modes", "Tier1", "Lore").setValue(Arrays.asList("")).setComment("Lore to display when called");
+        this.get().getNode("Modes", "Tier1", "Display").setValue("&bTier 1").setComment("Display value");
+        this.get().getNode("Modes", "Tier1", "ItemString").setValue("minecraft:paper").setComment("Item String");
 
         this.get().getNode("Modes", "Tier2", "Info").setValue(Arrays.asList("&4For Advanced players")).setComment("The info displayed in the GUI when selecting a tier");
         this.get().getNode("Modes", "Tier2", "NPCOnly").setValue(false).setComment("Whether this Gym offers ONLY Npc support");
         this.get().getNode("Modes", "Tier2", "EnableNPC").setValue(false).setComment("Whether NPCS should be enabled for this gym if no Player Leaders are online");
+        this.get().getNode("Modes", "Tier2", "Lore").setValue(Arrays.asList("")).setComment("Lore to display when called");
+        this.get().getNode("Modes", "Tier2", "Display").setValue("&bTier 2").setComment("Display value");
+        this.get().getNode("Modes", "Tier2", "ItemString").setValue("minecraft:paper").setComment("Item String");
 
         this.get().getNode("Modes", "NPCGym", "Info").setValue(Arrays.asList("&cI'm an NPC Only Gym Tier!")).setComment("The info displayed in the GUI when selecting a tier");
         this.get().getNode("Modes", "NPCGym", "NPCOnly").setValue(true).setComment("Whether this Gym offers ONLY Npc support");
         this.get().getNode("Modes", "NPCGym", "EnableNPC").setValue(true).setComment("Whether NPCS should be enabled for this gym if no Player Leaders are online");
+        this.get().getNode("Modes", "NPCGym", "Lore").setValue(Arrays.asList("")).setComment("Lore to display when called");
+        this.get().getNode("Modes", "NPCGym", "Display").setValue("&bNPC Gyms").setComment("Display value");
+        this.get().getNode("Modes", "NPCGym", "ItemString").setValue("minecraft:paper").setComment("Item String");
 
         this.get().getNode("Gyms", "Example", "Tier").setValue("Tier1").setComment("What tier does this belong to?");
         this.get().getNode("Gyms", "Example", "Warp", "GymLeader", "WorldID").setValue(0);

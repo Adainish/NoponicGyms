@@ -646,15 +646,20 @@ public class GymsRegistry {
         }
 
         public void addToQueue(GymPlayer player) {
-            player.setQueuePos(queue.size() +1);
-            this.queue.add(player);
-            updateQueue();
+            if (queue.isEmpty()) {
+                player.setQueuePos(0);
+                queue.add(player);
+            } else {
+                player.setQueuePos(queue.size() + 1);
+                this.queue.add(player);
+                updateQueue();
+            }
         }
 
         public void updateQueue() {
             for (int i = 0; i < queue.size(); i++) {
                 GymPlayer p = queue.get(i);
-                updateQueuePos(p, i--, false);
+                updateQueuePos(p, i -1, false);
             }
             queue.sort(Comparator.comparing(GymPlayer::getQueuePos));
         }

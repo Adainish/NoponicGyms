@@ -90,6 +90,13 @@ public class ModeRegistry {
 
         public Mode(String key) {
             this.key = key;
+            this.setDisplay(GymConfig.getConfig().get().getNode("Modes", key, "Display").getString());
+            this.setItemString(GymConfig.getConfig().get().getNode("Modes", key, "ItemString").getString());
+            try {
+                this.setLoreList(GymConfig.getConfig().get().getNode("Modes", key, "Lore").getList(TypeToken.of(String.class)));
+            } catch (ObjectMappingException e) {
+                e.printStackTrace();
+            }
             this.setOnlyNPC(GymConfig.getConfig().get().getNode("Modes", key, "NPCOnly").getBoolean());
             this.setNPC(GymConfig.getConfig().get().getNode("Modes", key, "EnableNPC").getBoolean());
             try {

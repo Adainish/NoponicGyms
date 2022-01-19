@@ -48,10 +48,10 @@ public class NoponicGyms {
 
         log.info("Meh Meh! Tora booting up " + MOD_NAME + " by Miss DevPon " + AUTHORS + " " + VERSION + " - 2021" + "to make Server better than any ServerPon!\n Poppi at your service!");
         configDir = new File(event.getModConfigurationDirectory() + "/");
-        configDir.mkdir();
+        configDir.mkdirs();
 
         dataDir = new File(event.getModConfigurationDirectory() + "/NoponicGyms/data");
-        dataDir.mkdir();
+        dataDir.mkdirs();
 
         initConfig(); //Init all Configs
         loadConfig(); //Load all configs

@@ -20,6 +20,7 @@ public class StoreMethods {
             NoponicGyms.log.error("There was an issue generating the GymPlayer, Data already exists? Ending function");
             return;
         }
+
         GymPlayer gymPlayer = new GymPlayer(player.getUniqueID());
 
         Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
@@ -71,7 +72,6 @@ public class StoreMethods {
     }
 
     public static GymPlayer getGymPlayer(EntityPlayer player) {
-
         File playerFile = new File(NoponicGyms.dataDir, "%uuid%.json".replaceAll("%uuid%", String.valueOf(player.getUniqueID())));
 
         Gson gson = new Gson();
