@@ -71,14 +71,7 @@ public class GymMethods {
     public static void takeChallenge(GymPlayer player, GymPlayer leader, GymsRegistry.Gym gym) {
         EntityPlayerMP challenger = ServerUtils.getPlayer(player.getName());
         EntityPlayerMP gymLeader = ServerUtils.getPlayer(leader.getName());
-        if (!gym.isLeader(leader.getName())) {
-            ServerUtils.send(gymLeader, "&cYou're not a gym leader for this gym, how did you even get here?");
-            return;
-        }
-        if (player.getUuid().equals(leader.getUuid())) {
-            ServerUtils.send(gymLeader, "&cYou can't challenge yourself!");
-            return;
-        }
+
         BlockPos challengerPos = new BlockPos(gym.getChallengerPosX(), gym.getChallengerPosY(), gym.getChallengerPosZ());
         BlockPos leaderPos = new BlockPos(gym.getLeaderPosX(), gym.getLeaderPosY(), gym.getLeaderPosZ());
 
@@ -86,7 +79,10 @@ public class GymMethods {
         TeleportUtils.teleport(gymLeader, gym.getLeaderWorldID(), leaderPos);
 
         sendRentals(leader, gym);
-        startBattle(challenger, gymLeader);
+        Task.builder().delay(20).execute(() -> {
+            startBattle(challenger, gymLeader);
+        }).build();
+
     }
 
     public static void startBattle(EntityPlayerMP challenger, EntityPlayerMP leader) {

@@ -18,6 +18,7 @@ import gg.oddysian.adenydd.noponicgyms.storage.registry.GymsRegistry;
 import gg.oddysian.adenydd.noponicgyms.storage.obj.GymPlayer;
 import gg.oddysian.adenydd.noponicgyms.storage.registry.ModeRegistry;
 import gg.oddysian.adenydd.noponicgyms.tasks.TeleportTask;
+import gg.oddysian.adenydd.noponicgyms.util.ServerUtils;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -153,11 +154,19 @@ public class UI {
         for (GymPlayer p:gym.getQueue()) {
             GooeyButton button = GooeyButton.builder()
                     .onClick(buttonAction -> {
+                        if (!gym.isLeader(leader.getName())) {
+                            ServerUtils.send(ServerUtils.getPlayer(leader.getName()), "&cYou're not a gym leader for this gym, how did you even get here?");
+                            return;
+                        }
+                        if (p.getUuid().equals(leader.getUuid())) {
+                            ServerUtils.send(ServerUtils.getPlayer(leader.getName()), "&cYou can't challenge yourself!");
+                            return;
+                        }
                         GymMethods.takeChallenge(p, leader, gym);
                         gym.removeFromQueue(p);
                     })
                     .title(p.getName())
-                    .lore(getFormattedList(Arrays.asList("&7Gym: %gym%".replaceAll("%gym%", gym.getDisplay()), "Queue Position: %pos%".replaceAll("%pos%", String.valueOf(p.getQueuePos())))))
+                    .lore(getFormattedList(Arrays.asList("&7Gym: %gym%".replaceAll("%gym%", gym.getDisplay()), "&7Queue Position: &b%pos%".replaceAll("%pos%", String.valueOf(p.getQueuePos())))))
                     .display(playerSkull(p.getName()))
                     .build();
 
