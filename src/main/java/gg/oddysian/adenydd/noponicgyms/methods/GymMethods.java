@@ -71,7 +71,14 @@ public class GymMethods {
     public static void takeChallenge(GymPlayer player, GymPlayer leader, GymsRegistry.Gym gym) {
         EntityPlayerMP challenger = ServerUtils.getPlayer(player.getName());
         EntityPlayerMP gymLeader = ServerUtils.getPlayer(leader.getName());
-
+        if (!gym.isLeader(leader.getName())) {
+            ServerUtils.send(gymLeader, "&cYou're not a gym leader for this gym, how did you even get here?");
+            return;
+        }
+        if (player.getUuid().equals(leader.getUuid())) {
+            ServerUtils.send(gymLeader, "&cYou can't challenge yourself!");
+            return;
+        }
         BlockPos challengerPos = new BlockPos(gym.getChallengerPosX(), gym.getChallengerPosY(), gym.getChallengerPosZ());
         BlockPos leaderPos = new BlockPos(gym.getLeaderPosX(), gym.getLeaderPosY(), gym.getLeaderPosZ());
 
@@ -88,7 +95,6 @@ public class GymMethods {
         PlayerPartyStorage leaderStorage = Pixelmon.storageManager.getParty(leader);
         PlayerParticipant challengerParticipant = new PlayerParticipant(challenger, challengerStorage.getTeam(), challengerStorage.getTeam().size());
         PlayerParticipant challengedParticipant = new PlayerParticipant(leader, leaderStorage.getTeam(), leaderStorage.getTeam().size());
-
         BattleControllerBase bcb =
                 new BattleControllerBase(
                         new BattleParticipant[]{challengedParticipant},

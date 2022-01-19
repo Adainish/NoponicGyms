@@ -6,10 +6,7 @@ import gg.oddysian.adenydd.noponicgyms.storage.config.GymConfig;
 import info.pixelmon.repack.ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import info.pixelmon.repack.ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ModeRegistry {
@@ -22,6 +19,7 @@ public class ModeRegistry {
                     list.add(g);
                 }
         }
+            list.sort(Comparator.comparing(GymsRegistry.Gym::getWeight));
         return list;
     }
 
@@ -42,6 +40,8 @@ public class ModeRegistry {
                 }
             }
         }
+
+        gymModes.sort(Comparator.comparing(Mode::getWeight));
 
     }
 
@@ -87,9 +87,11 @@ public class ModeRegistry {
         private List<String> loreList;
         private boolean enableNPC;
         private boolean onlyNPC;
+        private int weight;
 
         public Mode(String key) {
             this.key = key;
+            this.setWeight(GymConfig.getConfig().get().getNode("Modes", key, "Weight").getInt());
             this.setDisplay(GymConfig.getConfig().get().getNode("Modes", key, "Display").getString());
             this.setItemString(GymConfig.getConfig().get().getNode("Modes", key, "ItemString").getString());
             try {
@@ -159,6 +161,14 @@ public class ModeRegistry {
 
         public void setLoreList(List<String> loreList) {
             this.loreList = loreList;
+        }
+
+        public int getWeight() {
+            return weight;
+        }
+
+        public void setWeight(int weight) {
+            this.weight = weight;
         }
     }
 }

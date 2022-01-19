@@ -14,6 +14,7 @@ import gg.oddysian.adenydd.noponicgyms.storage.registry.GymsRegistry;
 import gg.oddysian.adenydd.noponicgyms.storage.obj.GymPlayer;
 import gg.oddysian.adenydd.noponicgyms.tasks.StorePokemonTask;
 import gg.oddysian.adenydd.noponicgyms.ui.UI;
+import gg.oddysian.adenydd.noponicgyms.util.EconomyUtil;
 import gg.oddysian.adenydd.noponicgyms.util.PermissionManager;
 import gg.oddysian.adenydd.noponicgyms.util.PermissionUtils;
 import gg.oddysian.adenydd.noponicgyms.util.ServerUtils;
@@ -200,14 +201,24 @@ public class Command extends CommandBase {
                         ServerUtils.send(sender, "&cIt seems there was an issue loading the Gym");
                         return;
                     }
-                    if (challengingGym.getGymQueue().containsKey(gymPlayerWrapper.getUuid())) {
-                        ServerUtils.send(sender, "&eYou're already in the queue for this Gym!");
-                        return;
-                    }
 
                     if (GymQueue.gymQue.containsKey(gymPlayerWrapper.getUuid())) {
                         ServerUtils.send(sender, "&eYou're already in the queue for another Gym!");
                         return;
+                    }
+
+                    if (challengingGym.isQueued(gymPlayerWrapper.getUuid())) {
+                        ServerUtils.send(sender, "&eYou're already in this Gyms queue");
+                        return;
+                    }
+
+                    if (challengingGym.isGymFee()) {
+                        if (EconomyUtil.canAfford(gymPlayerWrapper.getUuid(), (int) challengingGym.getFeeCost())) {
+                            EconomyUtil.takeBalance(gymPlayerWrapper.getUuid(), (int) challengingGym.getFeeCost());
+                        } else {
+                            ServerUtils.send(sender, "&cYou can't afford to challenge this gym");
+                            return;
+                        }
                     }
 
                     challengingGym.addToQueue(gymPlayerWrapper);

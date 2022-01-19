@@ -609,7 +609,7 @@ public class GymsRegistry {
             this.mode = mode;
         }
 
-        private boolean isQueued(UUID uuid) {
+        public boolean isQueued(UUID uuid) {
             for (GymPlayer player:queue) {
                 if (player.getUuid().equals(uuid))
                     return true;
@@ -617,7 +617,7 @@ public class GymsRegistry {
             return false;
         }
 
-        private boolean isLeader(String s) {
+        public boolean isLeader(String s) {
             for (String l:gymLeaderList) {
                 if (l.equalsIgnoreCase(s))
                     return true;
