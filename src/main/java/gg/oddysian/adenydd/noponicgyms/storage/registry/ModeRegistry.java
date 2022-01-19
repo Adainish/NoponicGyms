@@ -15,6 +15,16 @@ import java.util.stream.Collectors;
 public class ModeRegistry {
     public static List<Mode> gymModes = new ArrayList<>();
 
+    public static List<GymsRegistry.Gym> gymsInMode(Mode mode) {
+        List<GymsRegistry.Gym> list = new ArrayList<>();
+            for (GymsRegistry.Gym g: GymsRegistry.getGyms()) {
+                if (g.getMode().equalsIgnoreCase(mode.modeName())) {
+                    list.add(g);
+                }
+        }
+        return list;
+    }
+
     public static void loadGymModes() {
         gymModes.clear();
         CommentedConfigurationNode rootNode = GymConfig.getConfig().get().getNode("Modes");
@@ -72,7 +82,9 @@ public class ModeRegistry {
     public static class Mode {
         private List<String> info;
         private final String key;
-
+        private String itemString;
+        private String display;
+        private List<String> loreList;
         private boolean enableNPC;
         private boolean onlyNPC;
 
@@ -112,6 +124,34 @@ public class ModeRegistry {
 
         public void setOnlyNPC(boolean onlyNPC) {
             this.onlyNPC = onlyNPC;
+        }
+
+        public String modeName() {
+            return this.key;
+        }
+
+        public String getItemString() {
+            return itemString;
+        }
+
+        public void setItemString(String itemString) {
+            this.itemString = itemString;
+        }
+
+        public String getDisplay() {
+            return display;
+        }
+
+        public void setDisplay(String display) {
+            this.display = display;
+        }
+
+        public List<String> getLoreList() {
+            return loreList;
+        }
+
+        public void setLoreList(List<String> loreList) {
+            this.loreList = loreList;
         }
     }
 }

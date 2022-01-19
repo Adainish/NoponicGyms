@@ -87,6 +87,7 @@ public class GymsRegistry {
     public static class Gym {
         private List<String> gymLeaderList = new ArrayList <>();
         private HashMap<UUID, GymPlayer> gymQueue = new HashMap <>();
+        private List<GymPlayer> queue = new ArrayList<>();
         private ItemStack gymBadge = new ItemStack(Items.DIAMOND);
         private String key = "";
         private String permission = "";
@@ -606,6 +607,56 @@ public class GymsRegistry {
 
         public void setMode(String mode) {
             this.mode = mode;
+        }
+
+        private boolean isQueued(UUID uuid) {
+            for (GymPlayer player:queue) {
+                if (player.getUuid().equals(uuid))
+                    return true;
+            }
+            return false;
+        }
+
+        private boolean isLeader(String s) {
+            for (String l:gymLeaderList) {
+                if (l.equalsIgnoreCase(s))
+                    return true;
+            }
+            return false;
+        }
+
+        public List<GymPlayer> getQueue() {
+            return queue;
+        }
+
+        public void setQueue(List<GymPlayer> queue) {
+            this.queue = queue;
+        }
+
+        public void removeFromQueue(GymPlayer player) {
+            this.queue.remove(player);
+            player.setQueuePos(0);
+            updateQueue();
+        }
+
+        public void updateQueuePos(GymPlayer player, int pos, boolean increase) {
+            if (increase)
+                player.increaseQueuePos(pos);
+            else player.decreaseQueuePos(pos);
+        }
+
+        public void addToQueue(GymPlayer player) {
+            player.setQueuePos(queue.size() +1);
+            this.queue.add(player);
+            updateQueue();
+        }
+
+        public void updateQueue() {
+            for (int i = 0; i < queue.size(); i++) {
+                GymPlayer p = queue.get(i);
+                updateQueuePos(p, i--, false);
+            }
+            queue.sort(Comparator.comparing(GymPlayer::getQueuePos));
         }
     }
 }

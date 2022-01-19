@@ -6,19 +6,18 @@ import ca.landonjw.gooeylibs2.api.button.GooeyButton;
 import ca.landonjw.gooeylibs2.api.button.PlaceholderButton;
 import ca.landonjw.gooeylibs2.api.helpers.PaginationHelper;
 import ca.landonjw.gooeylibs2.api.page.LinkedPage;
-import ca.landonjw.gooeylibs2.api.page.Page;
 import ca.landonjw.gooeylibs2.api.template.Template;
 import ca.landonjw.gooeylibs2.api.template.types.ChestTemplate;
 import com.cable.library.tasks.Task;
 import com.pixelmonmod.pixelmon.config.PixelmonItemsTMs;
 import com.pixelmonmod.pixelmon.enums.technicalmoves.ITechnicalMove;
 import gg.oddysian.adenydd.noponicgyms.NoponicGyms;
+import gg.oddysian.adenydd.noponicgyms.methods.GymMethods;
 import gg.oddysian.adenydd.noponicgyms.storage.obj.GymBadge;
 import gg.oddysian.adenydd.noponicgyms.storage.registry.GymsRegistry;
 import gg.oddysian.adenydd.noponicgyms.storage.obj.GymPlayer;
 import gg.oddysian.adenydd.noponicgyms.storage.registry.ModeRegistry;
 import gg.oddysian.adenydd.noponicgyms.tasks.TeleportTask;
-import gg.oddysian.adenydd.noponicgyms.util.ServerUtils;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -28,6 +27,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class UI {
 
@@ -105,10 +105,96 @@ public class UI {
         return formattedInfo;
     }
 
-    public static List<Button> gyms(List<GymsRegistry.Gym> gyms) {
+    public static List<Button> modeList() {
+        List<Button> buttonList = new ArrayList<>();
+        for (ModeRegistry.Mode m:ModeRegistry.gymModes) {
+            GooeyButton button = GooeyButton.builder()
+                    .display(new ItemStack(Item.getByNameOrId(m.getItemString())))
+                    .title(getFormattedDisplayName(m.getDisplay()))
+                    .lore(getFormattedList(m.getLoreList()))
+                    .onClick(buttonAction -> {
+                        UIManager.closeUI(buttonAction.getPlayer());
+                        UIManager.openUIPassively(buttonAction.getPlayer(), Gyms(m), 20, TimeUnit.SECONDS);
+                    })
+                    .build();
+
+            buttonList.add(button);
+        }
+        return buttonList;
+    }
+
+    public static List<Button> gymQueueModes(GymPlayer player) {
+        List<Button> buttonList = new ArrayList<>();
+        for (ModeRegistry.Mode m:ModeRegistry.gymModes) {
+            GooeyButton button = GooeyButton.builder()
+                    .display(new ItemStack(Item.getByNameOrId(m.getItemString())))
+                    .title(getFormattedDisplayName(m.getDisplay()))
+                    .lore(getFormattedList(m.getLoreList()))
+                    .onClick(buttonAction -> {
+                        UIManager.closeUI(buttonAction.getPlayer());
+                        UIManager.openUIPassively(buttonAction.getPlayer(), DisplayModeGyms(m, player), 20, TimeUnit.SECONDS);
+                    })
+                    .build();
+
+            buttonList.add(button);
+        }
+        return buttonList;
+    }
+
+    public static ItemStack playerSkull(String n) {
+        ItemStack skull = new ItemStack(Items.SKULL, 1, 3);
+        NBTTagCompound tagCompound = new NBTTagCompound();
+        tagCompound.setString("SkullOwner", n);
+        skull.setTagCompound(tagCompound);
+        return skull;
+    }
+    public static List<Button> queueList(GymsRegistry.Gym gym, GymPlayer leader) {
+        List<Button> buttonList = new ArrayList<>();
+        for (GymPlayer p:gym.getQueue()) {
+            GooeyButton button = GooeyButton.builder()
+                    .onClick(buttonAction -> {
+                        GymMethods.takeChallenge(p, leader, gym);
+                        gym.removeFromQueue(p);
+                    })
+                    .title(p.getName())
+                    .lore(getFormattedList(Arrays.asList("&7Gym: %gym%".replaceAll("%gym%", gym.getDisplay()), "Queue Position: %pos%".replaceAll("%pos%", String.valueOf(p.getQueuePos())))))
+                    .display(playerSkull(p.getName()))
+                    .build();
+
+            buttonList.add(button);
+        }
+        return buttonList;
+    }
+
+    public static List<Button> gymsQueueList(ModeRegistry.Mode mode, GymPlayer player) {
         List<Button> buttonList = new ArrayList<>();
 
-        for (GymsRegistry.Gym gym: gyms) {
+        for (GymsRegistry.Gym gym: ModeRegistry.gymsInMode(mode)) {
+            List<String> lore = new ArrayList<>();
+
+            if (gym.getQueue().isEmpty())
+                continue;
+
+            Button button = GooeyButton.builder()
+                    .display(gym.getGymBadge())
+                    .lore(getFormattedList(lore))
+                    .onClick(buttonAction -> {
+                        UIManager.closeUI(buttonAction.getPlayer());
+                        UIManager.openUIPassively(buttonAction.getPlayer(), GymQueue(gym, player), 20, TimeUnit.SECONDS);
+                    })
+                    .title(getFormattedDisplayName(gym.getDisplay()))
+                    .build();
+            buttonList.add(button);
+
+        }
+        return buttonList;
+    }
+
+
+    public static List<Button> gyms(ModeRegistry.Mode mode) {
+        List<Button> buttonList = new ArrayList<>();
+
+        for (GymsRegistry.Gym gym: ModeRegistry.gymsInMode(mode)) {
             List<String> lore = new ArrayList<>();
 
             for (String s: gym.getLore()) {
@@ -182,11 +268,18 @@ public class UI {
         return buttonList;
     }
 
-    public static LinkedPage gyms() {
+    public static LinkedPage GymModes() {
+        PlaceholderButton placeholderButton = new PlaceholderButton();
+        Template template = ChestTemplate.builder(5).rectangle(1, 1, 3, 7, placeholderButton).fill(filler()).build();
+
+        return PaginationHelper.createPagesFromPlaceholders(template, modeList(), LinkedPage.builder().title("Gyms").template(template));
+    }
+
+    public static LinkedPage Gyms(ModeRegistry.Mode mode) {
         PlaceholderButton placeHolderButton = new PlaceholderButton();
         Template template = ChestTemplate.builder(5).rectangle(1, 1, 3,  7, placeHolderButton).fill(filler()).build();
 
-        return PaginationHelper.createPagesFromPlaceholders(template, gyms(GymsRegistry.gyms), LinkedPage.builder().title("Gyms").template(template));
+        return PaginationHelper.createPagesFromPlaceholders(template, gyms(mode), LinkedPage.builder().title("Gyms").template(template));
     }
 
 
@@ -194,6 +287,25 @@ public class UI {
         PlaceholderButton placeholderButton = new PlaceholderButton();
         Template template = ChestTemplate.builder(5).fill(filler()).rectangle(1, 1, 3, 7, placeholderButton).build();
         return  PaginationHelper.createPagesFromPlaceholders(template, playerBadges(gymPlayer, isSpying), LinkedPage.builder().title("%player%'s Badges".replaceAll("%player%", gymPlayer.getName())).template(template));
+    }
+
+    public static LinkedPage ModeQueues(GymPlayer player) {
+        PlaceholderButton placeholderButton = new PlaceholderButton();
+        Template template = ChestTemplate.builder(5).fill(filler()).rectangle(1, 1, 3, 7, placeholderButton).build();
+        return  PaginationHelper.createPagesFromPlaceholders(template, gymQueueModes(player), LinkedPage.builder().title("Queues").template(template));
+    }
+
+    public static LinkedPage DisplayModeGyms(ModeRegistry.Mode mode, GymPlayer player) {
+        PlaceholderButton placeholderButton = new PlaceholderButton();
+        Template template = ChestTemplate.builder(5).fill(filler()).rectangle(1, 1, 3, 7, placeholderButton).build();
+        return  PaginationHelper.createPagesFromPlaceholders(template, gymsQueueList(mode, player), LinkedPage.builder().title("Queues".replaceAll("%m%", mode.getDisplay())).template(template));
+    }
+
+    public static LinkedPage GymQueue(GymsRegistry.Gym gym, GymPlayer player) {
+
+        PlaceholderButton placeholderButton = new PlaceholderButton();
+        Template template = ChestTemplate.builder(5).fill(filler()).rectangle(1, 1, 3, 7, placeholderButton).build();
+        return  PaginationHelper.createPagesFromPlaceholders(template, queueList(gym, player), LinkedPage.builder().title("%Gym% Queue".replaceAll("%Gym%", gym.getDisplay())).template(template));
     }
 
 }

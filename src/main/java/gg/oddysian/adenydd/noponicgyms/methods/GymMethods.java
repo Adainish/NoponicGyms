@@ -1,5 +1,7 @@
 package gg.oddysian.adenydd.noponicgyms.methods;
 
+import com.cable.library.CableLibs;
+import com.cable.library.teleport.TeleportUtils;
 import gg.oddysian.adenydd.noponicgyms.NoponicGyms;
 import gg.oddysian.adenydd.noponicgyms.storage.StoreMethods;
 import gg.oddysian.adenydd.noponicgyms.storage.config.LanguageConfig;
@@ -8,11 +10,18 @@ import gg.oddysian.adenydd.noponicgyms.storage.registry.GymsRegistry;
 import gg.oddysian.adenydd.noponicgyms.storage.obj.GymPlayer;
 import gg.oddysian.adenydd.noponicgyms.util.ServerUtils;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.math.BlockPos;
 
 public class GymMethods {
 
-    public static void sendChallengeNotification(){
+    public static void sendChallengeNotification(GymPlayer player, GymsRegistry.Gym gym){
+        for (String s:gym.getGymLeaderList()) {
+            EntityPlayerMP playerMP = ServerUtils.getPlayer(s);
+            if (playerMP == null)
+                continue;
 
+            ServerUtils.send(playerMP, "&c%player% has challenged %gym%".replaceAll("%player%", player.getName()).replaceAll("%gym%", gym.getDisplay()));
+        }
     }
 
     public static void giveGymBadge(GymPlayer gymPlayer, GymBadge gymBadge) {
@@ -49,8 +58,15 @@ public class GymMethods {
         StoreMethods.updateGymPlayerData(gymPlayer);
     }
 
-    public static void takeChallenge() {
+    public static void takeChallenge(GymPlayer player, GymPlayer leader, GymsRegistry.Gym gym) {
+        EntityPlayerMP challenger = ServerUtils.getPlayer(player.getName());
+        EntityPlayerMP gymLeader = ServerUtils.getPlayer(leader.getName());
 
+        BlockPos challengerPos = new BlockPos(gym.getChallengerPosX(), gym.getChallengerPosY(), gym.getChallengerPosZ());
+        BlockPos leaderPos = new BlockPos(gym.getLeaderPosX(), gym.getLeaderPosY(), gym.getLeaderPosZ());
+
+        TeleportUtils.teleport(challenger, gym.getChallengerWorldID(), challengerPos);
+        TeleportUtils.teleport(gymLeader, gym.getLeaderWorldID(), leaderPos);
     }
 
 

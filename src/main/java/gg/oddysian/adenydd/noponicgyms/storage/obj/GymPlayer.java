@@ -10,6 +10,7 @@ public class GymPlayer {
 
     private UUID uuid;
     private String name;
+    private int queuePos;
     private List<GymBadge> badges = new ArrayList<>();
 
     public GymPlayer(UUID uuid) {
@@ -84,4 +85,19 @@ public class GymPlayer {
         this.uuid = uuid;
     }
 
+    public int getQueuePos() {
+        return queuePos;
+    }
+
+    public void increaseQueuePos(int queuePos) {
+        this.queuePos += queuePos;
+    }
+
+    public void decreaseQueuePos(int queuePos) {
+        this.queuePos -= queuePos;
+    }
+
+    public void setQueuePos(int queuePos) {
+        this.queuePos = queuePos;
+    }
 }

@@ -71,24 +71,7 @@ public class Command extends CommandBase {
             if (arguments[0].contains("queue")) {
                 EntityPlayerMP player = ServerUtils.getPlayer(sender.getName());
                 GymPlayer gymPlayer = GymPlayerWrapper.gymPlayerHashMap.get(player.getUniqueID());
-
-
-//                    if (!gymPlayer.isQueued()) {
-//                        ServerUtils.send(player, "&cOi, You're not currently queue'd, try challenging a gym using /gym challenge <gymname>");
-//                        return;
-//                    }
-//                    List<String> msg = new ArrayList<>();
-//                    if (GymsRegistry.getGym(gymPlayer.getQueuedForGym()) == null || gymPlayer.getQueuedForGym().isEmpty()) {
-//                        ServerUtils.send(player, "&eIt seems the Queue was empty or the Gym currently does not exist");
-//                        return;
-//                    }
-//                    GymsRegistry.getGym(gymPlayerWrapper.getQueuedForGym()).gymQueue.forEach((uuid, queuePlayer) -> {
-//                        msg.add(queuePlayer.getPlayer().getName());
-//                    });
-
-//                    for (String s : msg) {
-//                        ServerUtils.send(player, s);
-//                    }
+                UIManager.openUIPassively(player, UI.ModeQueues(gymPlayer), 20, TimeUnit.SECONDS);
             }
 
 
@@ -107,7 +90,7 @@ public class Command extends CommandBase {
             if (arguments[0].contains("list")) {
                 if (PermissionUtils.canUse("noponicgyms.user.listgyms", sender)) {
                     EntityPlayerMP playerMP = ServerUtils.getInstance().getPlayerList().getPlayerByUUID(sender.getCommandSenderEntity().getUniqueID());
-                    UIManager.openUIPassively(playerMP, UI.gyms(), 20, TimeUnit.SECONDS);
+                    UIManager.openUIPassively(playerMP, UI.GymModes(), 20, TimeUnit.SECONDS);
                 } else {
                     ServerUtils.send(sender, "&b(&e!&b) &eYou're not allowed to use this command");
                 }
@@ -117,6 +100,26 @@ public class Command extends CommandBase {
 
         if (arguments.length == 2) {
 
+            if (arguments[0].contains("queue")) {
+                if (PermissionUtils.canUse("noponicgyms.leader.queue", sender)) {
+                    GymsRegistry.Gym gym = GymsRegistry.getGym(arguments[1]);
+                    if (gym == null) {
+                        ServerUtils.send(sender, "&cThe gym doesn't exist");
+                        return;
+                    }
+                    EntityPlayerMP playerMP = ServerUtils.getPlayer(sender.getName());
+                    if (playerMP == null) {
+                        ServerUtils.send(sender, "&cOnly a player may run this command");
+                        return;
+                    }
+                    GymPlayer player = GymPlayerWrapper.gymPlayerHashMap.get(playerMP.getUniqueID());
+                    if (player == null) {
+                        ServerUtils.send(sender, "&cSomething went wrong while attempting to load your Player Data!");
+                        return;
+                    }
+                    UIManager.openUIPassively(playerMP, UI.GymQueue(gym, player), 20, TimeUnit.SECONDS);
+                } else ServerUtils.send(sender, "&b(&e!&b) &eYou're not allowed to use this command");
+            }
             if (arguments[0].contains("checkbadges")) {
                 if (PermissionUtils.canUse("noponicgyms.leader.checkbadges", sender)) {
 
@@ -207,9 +210,8 @@ public class Command extends CommandBase {
                         return;
                     }
 
-//                    gymPlayerWrapper.setQueued(true);
-//                    gymPlayerWrapper.setQueuedForGym(arguments[1]);
-//                    gymPlayerWrapper.setQueuedFor(gymPlayerWrapper, challengingGym, true);
+                    challengingGym.addToQueue(gymPlayerWrapper);
+                    GymMethods.sendChallengeNotification(gymPlayerWrapper, challengingGym);
                     ServerUtils.send(sender, "&eYou entered the Gym queue for the %gym% Gym!".replaceAll("%gym%", arguments[1]));
                 } else ServerUtils.send(sender, "&cYou're not allowed to run this command");
             }
