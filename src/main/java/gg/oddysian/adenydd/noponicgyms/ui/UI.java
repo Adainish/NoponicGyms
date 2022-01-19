@@ -4,13 +4,23 @@ import ca.landonjw.gooeylibs2.api.UIManager;
 import ca.landonjw.gooeylibs2.api.button.Button;
 import ca.landonjw.gooeylibs2.api.button.GooeyButton;
 import ca.landonjw.gooeylibs2.api.button.PlaceholderButton;
+import ca.landonjw.gooeylibs2.api.button.linked.LinkType;
+import ca.landonjw.gooeylibs2.api.button.linked.LinkedPageButton;
 import ca.landonjw.gooeylibs2.api.helpers.PaginationHelper;
 import ca.landonjw.gooeylibs2.api.page.LinkedPage;
 import ca.landonjw.gooeylibs2.api.template.Template;
 import ca.landonjw.gooeylibs2.api.template.types.ChestTemplate;
 import com.cable.library.tasks.Task;
+import com.pixelmonmod.pixelmon.Pixelmon;
+import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
+import com.pixelmonmod.pixelmon.api.storage.PCStorage;
+import com.pixelmonmod.pixelmon.api.storage.PokemonStorage;
+import com.pixelmonmod.pixelmon.config.PixelmonItems;
 import com.pixelmonmod.pixelmon.config.PixelmonItemsTMs;
 import com.pixelmonmod.pixelmon.enums.technicalmoves.ITechnicalMove;
+import com.pixelmonmod.pixelmon.items.ItemPixelmonSprite;
+import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
+import com.pixelmonmod.pixelmon.storage.ReforgedStorageManager;
 import gg.oddysian.adenydd.noponicgyms.NoponicGyms;
 import gg.oddysian.adenydd.noponicgyms.methods.GymMethods;
 import gg.oddysian.adenydd.noponicgyms.storage.obj.GymBadge;
@@ -19,7 +29,9 @@ import gg.oddysian.adenydd.noponicgyms.storage.obj.GymPlayer;
 import gg.oddysian.adenydd.noponicgyms.storage.registry.ModeRegistry;
 import gg.oddysian.adenydd.noponicgyms.tasks.TeleportTask;
 import gg.oddysian.adenydd.noponicgyms.util.ServerUtils;
+import gg.oddysian.adenydd.noponicgyms.wrapper.GymSelection;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumDyeColor;
@@ -31,6 +43,10 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class UI {
+
+    public static ItemStack getPhoto(Pokemon pokemon) {
+        return ItemPixelmonSprite.getPhoto(pokemon);
+    }
 
     private static ItemStack setDefaultIcon(String[] elements, boolean enchanted) {
 
@@ -162,6 +178,10 @@ public class UI {
                             ServerUtils.send(ServerUtils.getPlayer(leader.getName()), "&cYou can't challenge yourself!");
                             return;
                         }
+                        p.setReadyForBattle(false);
+                        leader.setReadyForBattle(false);
+                        NoponicGyms.selectionList.add(new GymSelection(gym, leader, p));
+                        UIManager.closeUI(buttonAction.getPlayer());
                         GymMethods.takeChallenge(p, leader, gym);
                         gym.removeFromQueue(p);
                     })
@@ -174,6 +194,7 @@ public class UI {
         }
         return buttonList;
     }
+
 
     public static List<Button> gymsQueueList(ModeRegistry.Mode mode, GymPlayer player) {
         List<Button> buttonList = new ArrayList<>();
@@ -314,7 +335,8 @@ public class UI {
 
         PlaceholderButton placeholderButton = new PlaceholderButton();
         Template template = ChestTemplate.builder(5).fill(filler()).rectangle(1, 1, 3, 7, placeholderButton).build();
-        return  PaginationHelper.createPagesFromPlaceholders(template, queueList(gym, player), LinkedPage.builder().title("%Gym% Queue".replaceAll("%Gym%", gym.getDisplay())).template(template));
+        return  PaginationHelper.createPagesFromPlaceholders(template, queueList(gym, player), LinkedPage.builder().title(getFormattedDisplayName("%Gym% Queue").replaceAll("%Gym%", gym.getDisplay())).template(template));
     }
+
 
 }

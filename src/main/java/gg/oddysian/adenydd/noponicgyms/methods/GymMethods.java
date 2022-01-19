@@ -1,14 +1,18 @@
 package gg.oddysian.adenydd.noponicgyms.methods;
 
+import ca.landonjw.gooeylibs2.api.UIManager;
 import com.cable.library.tasks.Task;
 import com.cable.library.teleport.TeleportUtils;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
+import com.pixelmonmod.pixelmon.api.storage.PCStorage;
+import com.pixelmonmod.pixelmon.api.storage.StoragePosition;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
 import com.pixelmonmod.pixelmon.battles.controller.BattleControllerBase;
 import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
 import com.pixelmonmod.pixelmon.battles.rules.BattleRules;
+import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
 import gg.oddysian.adenydd.noponicgyms.NoponicGyms;
 import gg.oddysian.adenydd.noponicgyms.listener.BattleListener;
@@ -18,9 +22,17 @@ import gg.oddysian.adenydd.noponicgyms.storage.obj.GymBadge;
 import gg.oddysian.adenydd.noponicgyms.storage.registry.GymsRegistry;
 import gg.oddysian.adenydd.noponicgyms.storage.obj.GymPlayer;
 import gg.oddysian.adenydd.noponicgyms.tasks.StorePokemonTask;
+import gg.oddysian.adenydd.noponicgyms.ui.LeaderSelectPage;
+import gg.oddysian.adenydd.noponicgyms.ui.SelectPartyPage;
+import gg.oddysian.adenydd.noponicgyms.ui.UI;
 import gg.oddysian.adenydd.noponicgyms.util.ServerUtils;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
+
+import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class GymMethods {
 
@@ -78,19 +90,43 @@ public class GymMethods {
         TeleportUtils.teleport(challenger, gym.getChallengerWorldID(), challengerPos);
         TeleportUtils.teleport(gymLeader, gym.getLeaderWorldID(), leaderPos);
 
-        sendRentals(leader, gym);
-        Task.builder().delay(20).execute(() -> {
-            startBattle(challenger, gymLeader);
-        }).build();
+        SelectPartyPage partyPage = new SelectPartyPage(challenger, player);
+        LeaderSelectPage selectPage = new LeaderSelectPage(gymLeader, gym, leader);
+        UIManager.openUIPassively(gymLeader, selectPage, 20, TimeUnit.SECONDS);
+        UIManager.openUIPassively(challenger, partyPage, 20, TimeUnit.SECONDS);
+//        Task.builder().delay(20).execute(() -> {
+//            startBattle(challenger, gymLeader);
+//        }).build();
 
+    }
+
+    public static List<Pokemon> rentalPokemon(GymsRegistry.Gym gym) {
+        List <Pokemon> rentalList = new ArrayList<>();
+        for (Pokemon gymPokemon : gym.setGymPokemon(gym.getKey())) {
+            if (gymPokemon != null)
+                rentalList.add(gymPokemon);
+        }
+        return rentalList;
+    }
+
+    public void handleRentals(GymsRegistry.Gym gym, GymPlayer player) {
+        Task.builder().execute(new StorePokemonTask(player.getUuid())).iterations(1).build();
+        PlayerPartyStorage playerPartyStorage = Pixelmon.storageManager.getParty(player.getUuid());
+        Task.builder().delay(5).execute(()-> {
+            for (Pokemon gymPokemon : gym.setGymPokemon(gym.getKey())) {
+                if (gymPokemon != null)
+                    playerPartyStorage.add(gymPokemon);
+            }
+     }).iterations(1).build();
     }
 
     public static void startBattle(EntityPlayerMP challenger, EntityPlayerMP leader) {
 
         PlayerPartyStorage challengerStorage = Pixelmon.storageManager.getParty(challenger);
         PlayerPartyStorage leaderStorage = Pixelmon.storageManager.getParty(leader);
-        PlayerParticipant challengerParticipant = new PlayerParticipant(challenger, challengerStorage.getTeam(), challengerStorage.getTeam().size());
-        PlayerParticipant challengedParticipant = new PlayerParticipant(leader, leaderStorage.getTeam(), leaderStorage.getTeam().size());
+
+        PlayerParticipant challengerParticipant = new PlayerParticipant(challenger, challengerStorage.getAndSendOutFirstAblePokemon(challenger));
+        PlayerParticipant challengedParticipant = new PlayerParticipant(leader, leaderStorage.getAndSendOutFirstAblePokemon(leader));
         BattleControllerBase bcb =
                 new BattleControllerBase(
                         new BattleParticipant[]{challengedParticipant},
@@ -106,11 +142,23 @@ public class GymMethods {
         BattleRegistry.registerBattle(bcb);
     }
 
-    public static void sendRentals(GymPlayer player, GymsRegistry.Gym gym) {
+    public static void updateChallengerParty(List<Pokemon> pokemonList, GymPlayer player) {
         Task.builder().execute(new StorePokemonTask(player.getUuid())).iterations(1).build();
         PlayerPartyStorage playerPartyStorage = Pixelmon.storageManager.getParty(player.getUuid());
-        Task.builder().delay(5).execute(()-> {
-            for (Pokemon gymPokemon : gym.setGymPokemon(gym.getKey())) {
+        Task.builder().delay(1).execute(()-> {
+            for (Pokemon pokemon : pokemonList) {
+                pokemon.addSpecFlag("gympokemon");
+                playerPartyStorage.add(pokemon);
+            }
+        }).iterations(1).build();
+        ServerUtils.send(ServerUtils.getInstance().getPlayerList().getPlayerByUUID(player.getUuid()), "&eWe've updated your Party to fit your selected members!");
+    }
+
+    public static void sendRentals(List<Pokemon> pokemonList, GymPlayer player, GymsRegistry.Gym gym) {
+        Task.builder().execute(new StorePokemonTask(player.getUuid())).iterations(1).build();
+        PlayerPartyStorage playerPartyStorage = Pixelmon.storageManager.getParty(player.getUuid());
+        Task.builder().delay(2).execute(()-> {
+            for (Pokemon gymPokemon : pokemonList) {
                 if (gymPokemon != null)
                     playerPartyStorage.add(gymPokemon);
             }

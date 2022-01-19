@@ -12,6 +12,7 @@ public class GymPlayer {
     private String name;
     private int queuePos;
     private List<GymBadge> badges = new ArrayList<>();
+    private boolean readyForBattle = false;
 
     public GymPlayer(UUID uuid) {
         setUuid(uuid);
@@ -99,5 +100,13 @@ public class GymPlayer {
 
     public void setQueuePos(int queuePos) {
         this.queuePos = queuePos;
+    }
+
+    public boolean isReadyForBattle() {
+        return readyForBattle;
+    }
+
+    public void setReadyForBattle(boolean readyForBattle) {
+        this.readyForBattle = readyForBattle;
     }
 }

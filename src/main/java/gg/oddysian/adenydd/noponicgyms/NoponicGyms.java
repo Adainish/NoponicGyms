@@ -10,7 +10,9 @@ import gg.oddysian.adenydd.noponicgyms.listener.PlayerListener;
 import gg.oddysian.adenydd.noponicgyms.storage.config.LanguageConfig;
 import gg.oddysian.adenydd.noponicgyms.storage.registry.GymsRegistry;
 import gg.oddysian.adenydd.noponicgyms.storage.registry.ModeRegistry;
+import gg.oddysian.adenydd.noponicgyms.tasks.UpdateGymSelection;
 import gg.oddysian.adenydd.noponicgyms.tasks.UpdateGyms;
+import gg.oddysian.adenydd.noponicgyms.wrapper.GymSelection;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
@@ -18,6 +20,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -39,6 +42,9 @@ public class NoponicGyms {
 
     @Mod.Instance(MOD_ID)
     public static NoponicGyms INSTANCE;
+
+
+    public static List <GymSelection> selectionList = new ArrayList <>();
 
 
     public static PlayerListener playerListener;
@@ -66,6 +72,7 @@ public class NoponicGyms {
         initOBJ();
         event.registerServerCommand(new Command());
         Task.builder().execute(new UpdateGyms()).infiniteIterations().interval(20).build();
+        Task.builder().execute(new UpdateGymSelection()).infiniteIterations().interval(20).build();
     }
 
     private void initConfig() {
