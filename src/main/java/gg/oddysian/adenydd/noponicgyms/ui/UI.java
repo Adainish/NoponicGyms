@@ -4,23 +4,15 @@ import ca.landonjw.gooeylibs2.api.UIManager;
 import ca.landonjw.gooeylibs2.api.button.Button;
 import ca.landonjw.gooeylibs2.api.button.GooeyButton;
 import ca.landonjw.gooeylibs2.api.button.PlaceholderButton;
-import ca.landonjw.gooeylibs2.api.button.linked.LinkType;
-import ca.landonjw.gooeylibs2.api.button.linked.LinkedPageButton;
 import ca.landonjw.gooeylibs2.api.helpers.PaginationHelper;
 import ca.landonjw.gooeylibs2.api.page.LinkedPage;
 import ca.landonjw.gooeylibs2.api.template.Template;
 import ca.landonjw.gooeylibs2.api.template.types.ChestTemplate;
 import com.cable.library.tasks.Task;
-import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
-import com.pixelmonmod.pixelmon.api.storage.PCStorage;
-import com.pixelmonmod.pixelmon.api.storage.PokemonStorage;
-import com.pixelmonmod.pixelmon.config.PixelmonItems;
 import com.pixelmonmod.pixelmon.config.PixelmonItemsTMs;
 import com.pixelmonmod.pixelmon.enums.technicalmoves.ITechnicalMove;
 import com.pixelmonmod.pixelmon.items.ItemPixelmonSprite;
-import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
-import com.pixelmonmod.pixelmon.storage.ReforgedStorageManager;
 import gg.oddysian.adenydd.noponicgyms.NoponicGyms;
 import gg.oddysian.adenydd.noponicgyms.methods.GymMethods;
 import gg.oddysian.adenydd.noponicgyms.storage.obj.GymBadge;
@@ -31,7 +23,6 @@ import gg.oddysian.adenydd.noponicgyms.tasks.TeleportTask;
 import gg.oddysian.adenydd.noponicgyms.util.ServerUtils;
 import gg.oddysian.adenydd.noponicgyms.wrapper.GymSelection;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumDyeColor;
@@ -165,6 +156,7 @@ public class UI {
         skull.setTagCompound(tagCompound);
         return skull;
     }
+
     public static List<Button> queueList(GymsRegistry.Gym gym, GymPlayer leader) {
         List<Button> buttonList = new ArrayList<>();
         for (GymPlayer p:gym.getQueue()) {

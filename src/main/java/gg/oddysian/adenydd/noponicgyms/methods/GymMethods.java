@@ -21,6 +21,7 @@ import gg.oddysian.adenydd.noponicgyms.storage.config.LanguageConfig;
 import gg.oddysian.adenydd.noponicgyms.storage.obj.GymBadge;
 import gg.oddysian.adenydd.noponicgyms.storage.registry.GymsRegistry;
 import gg.oddysian.adenydd.noponicgyms.storage.obj.GymPlayer;
+import gg.oddysian.adenydd.noponicgyms.storage.registry.ModeRegistry;
 import gg.oddysian.adenydd.noponicgyms.tasks.StorePokemonTask;
 import gg.oddysian.adenydd.noponicgyms.ui.LeaderSelectPage;
 import gg.oddysian.adenydd.noponicgyms.ui.SelectPartyPage;
@@ -171,16 +172,33 @@ public class GymMethods {
         if (gym == null)
             return;
 
-        if (open && !gym.isOpened()) {
-            openGym(gym);
-        }
-        if (!open && gym.isOpened()) {
-            closeGym(gym);
+        ModeRegistry.Mode mode = ModeRegistry.getMode(gym.getMode());
+        if (mode != null) {
+            if (mode.isOnlyNPC()) {
+                if (open && !gym.isOpened()) {
+                    openGym(gym, mode);
+                    return;
+                }
+                if (!open && gym.isOpened()) {
+                    closeGym(gym, mode);
+                }
+            }
+            if (mode.isNPC()) {
+
+            } else {
+                if (open && !gym.isOpened()) {
+                    openGym(gym, mode);
+                    return;
+                }
+                if (!open && gym.isOpened()) {
+                    closeGym(gym, mode);
+                }
+            }
         }
 
     }
 
-    public static void closeGym(GymsRegistry.Gym gym) {
+    public static void closeGym(GymsRegistry.Gym gym, ModeRegistry.Mode mode) {
 
         if (!gym.isOpened())
             return;
@@ -191,7 +209,7 @@ public class GymMethods {
 
     }
 
-    public static void openGym(GymsRegistry.Gym gym) {
+    public static void openGym(GymsRegistry.Gym gym, ModeRegistry.Mode mode) {
 
         if (gym.isOpened())
             return;
