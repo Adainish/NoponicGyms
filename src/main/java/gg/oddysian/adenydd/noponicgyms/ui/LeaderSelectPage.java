@@ -42,18 +42,18 @@ public class LeaderSelectPage extends UpdateEmitter <Page> implements Page {
     private List <Pokemon> selectedPokemon = new ArrayList <>();
     private ChestTemplate.Builder chestTemplate = ChestTemplate.builder(7);
 
-    GooeyButton readyUp() {
+    GooeyButton readyUp(GymPlayer p) {
         ItemStack stack = null;
 
-        if (player.isReadyForBattle()) {
+        if (p.isReadyForBattle()) {
             stack = new ItemStack(Items.DYE, 1, 5);
         } else stack = new ItemStack(Items.DYE, 1, 4);
 
         return GooeyButton.builder().onClick(b -> {
-            GymSelection s = GymSelection.getSelection(player.getUuid());
+            GymSelection s = GymSelection.getSelection(p.getUuid());
             GymSelection newSelection = s;
-            if (player.isReadyForBattle()) {
-                player.setReadyForBattle(false);
+            if (p.isReadyForBattle()) {
+                p.setReadyForBattle(false);
                 if (newSelection != null) {
                     newSelection.updateEntity(player, false);
                     NoponicGyms.selectionList.remove(s);
@@ -119,7 +119,7 @@ public class LeaderSelectPage extends UpdateEmitter <Page> implements Page {
                 .build();
     }
 
-    public LeaderSelectPage(EntityPlayerMP playerMP, GymsRegistry.Gym gym, GymPlayer player) {
+    public LeaderSelectPage(GymsRegistry.Gym gym, GymPlayer player) {
 
         PlaceholderButton placeholderButton = new PlaceholderButton();
         Template template = null;
@@ -131,13 +131,13 @@ public class LeaderSelectPage extends UpdateEmitter <Page> implements Page {
                     .fill(filler())
                     .set(0, 0 , previous)
                     .set(1, 0, next)
-                    .set(2, 0, readyUp())
+                    .set(2, 0, readyUp(player))
                     .rectangle(1, 1, 5, 7, placeholderButton)
                     .build();
         } else {
             template = chestTemplate
                     .fill(filler())
-                    .set(2, 0, readyUp())
+                    .set(2, 0, readyUp(player))
                     .rectangle(1, 1, 5, 7, placeholderButton)
                     .build();
         }

@@ -92,7 +92,7 @@ public class GymMethods {
         TeleportUtils.teleport(gymLeader, gym.getLeaderWorldID(), leaderPos);
 
         SelectPartyPage partyPage = new SelectPartyPage(challenger, player);
-        LeaderSelectPage selectPage = new LeaderSelectPage(gymLeader, gym, leader);
+        LeaderSelectPage selectPage = new LeaderSelectPage(gym, leader);
         UIManager.openUIPassively(gymLeader, selectPage, 20, TimeUnit.SECONDS);
         UIManager.openUIPassively(challenger, partyPage, 20, TimeUnit.SECONDS);
 //        Task.builder().delay(20).execute(() -> {
